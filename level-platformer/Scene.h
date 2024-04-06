@@ -20,6 +20,7 @@ public:
     // ————— ATTRIBUTES ————— //
     GameState m_state;
     const int m_entityCap;
+    bool m_changeScenes = false;
     bool m_gameIsRunning = true;
 
     // ————— VIRTUAL METHODS ————— //

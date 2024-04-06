@@ -13,7 +13,10 @@
 #include "ShaderProgram.h"
 #include "Utility.h"
 #include "Scene.h"
+#include "Menu.h"
 #include "Level1.h"
+#include "Level2.h"
+#include "Level3.h"
 //#include "Entity.h"
 //#include "WalkerEntity.h"
 //#include "Map.h"
@@ -48,7 +51,10 @@ const float FIXED_TIMESTEP = 0.0166666f;
 // scenes
 const int NUM_OF_SCENES = 1;
 Scene* const ALL_SCENES[] = {
-    new Level1(60)
+    new Menu(10),
+    new Level1(60),
+    new Level2(60),
+    new Level3(60)
 };
 
 // ————— VARIABLES ————— //
@@ -73,7 +79,7 @@ void startup_scene(int index) {
 void initialise()
 {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
-    g_displayWindow = SDL_CreateWindow("Game Template",
+    g_displayWindow = SDL_CreateWindow("Multi-Level Platformer",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         WINDOW_WIDTH, WINDOW_HEIGHT,
         SDL_WINDOW_OPENGL);
@@ -89,7 +95,7 @@ void initialise()
 
     g_shaderProgram.load(V_SHADER_PATH, F_SHADER_PATH);
 
-    g_viewMatrix = glm::mat4(1.0f);
+    g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-4.5f, -3.25f, 0.0f));
     g_projectionMatrix = glm::ortho(-5.0f, 5.0f, -3.75f, 3.75f, -1.0f, 1.0f);
 
     g_shaderProgram.set_projection_matrix(g_projectionMatrix);
@@ -140,11 +146,19 @@ void update()
     {
         g_currentScene->update(FIXED_TIMESTEP);
         if (!g_currentScene->m_gameIsRunning) g_gameIsRunning = false;
+        if (g_currentScene->m_changeScenes) startup_scene(g_currentScene->m_state.nextSceneID);
         g_timeAccumulator -= FIXED_TIMESTEP;
     }
 
     // ————— CAMERA TRACKING ————— //
-    g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-g_currentScene->get_player()->get_position().x, -3.5f, 0.0f));
+    float xPos = g_currentScene->get_player()->get_position().x;
+    float lBound = g_currentScene->m_state.map->get_left_bound();
+    float rBound = g_currentScene->m_state.map->get_right_bound();
+    if (xPos > lBound + 5.0f && xPos < rBound - 5.0f) {
+        // only scroll camera if we aren't near the edge of the screen
+        g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xPos, -3.25f, 0.0f));
+    }
+    
 }
 
 void render()
