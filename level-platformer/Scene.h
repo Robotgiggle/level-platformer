@@ -1,0 +1,51 @@
+#pragma once
+#include <SDL_mixer.h>
+#include "Entity.h"
+#include "Map.h"
+
+struct GameState {
+    GameState(int cap) { entities = new Entity*[cap]; }
+
+    Entity** entities;
+    Map* map;
+
+    Mix_Music* bgm;
+    Mix_Chunk* jumpSfx;
+
+    int nextSceneID;
+};
+
+class Scene {
+public:
+    // ————— ATTRIBUTES ————— //
+    GameState m_state;
+    const int m_entityCap;
+    bool m_gameIsRunning = true;
+
+    // ————— VIRTUAL METHODS ————— //
+    virtual void initialise() = 0;
+    virtual void process_input() = 0;
+    virtual void process_event(SDL_Event event) = 0;
+    virtual void update(float delta_time) = 0;
+    virtual void render(ShaderProgram* program) = 0;
+
+    // ————— CONCRETE METHODS ————— //
+    Scene(int cap);
+    ~Scene();
+    // for Some Fucking Reason template functions have to be entirely defined in the header file
+    template <class EntityType, class... SpawnArgs>
+    EntityType* spawn(Scene* scene, SpawnArgs... args) {
+        for (int i = 0; i < m_entityCap; i++) {
+            if (m_state.entities[i]) continue;
+            EntityType* newEntity = new EntityType(scene, args...);
+            newEntity->set_array_index(i);
+            m_state.entities[i] = newEntity;
+            return newEntity;
+        }
+        return nullptr;
+    }
+
+    // ————— GETTERS ————— //
+    GameState const get_state() const { return m_state; }
+    virtual Entity* get_player() const = 0;
+};
