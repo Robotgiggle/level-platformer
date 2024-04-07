@@ -1,11 +1,11 @@
 #pragma once
 #include "../Scene.h"
-#include "../WalkerEntity.h"
 
 class Menu : public Scene {
 public:
     // ————— CUSTOM ENTITIES ————— //
     Entity*& e_player = m_state.entities[0];
+    Entity*& e_crawler = m_state.entities[1];
 
     // ————— METHODS ————— //
     Menu(int cap);

@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CrawlerEntity.cpp" />
     <ClCompile Include="levels\Level1.cpp" />
     <ClCompile Include="levels\Level2.cpp" />
     <ClCompile Include="levels\Level3.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="ShaderProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CrawlerEntity.h" />
     <ClInclude Include="levels\Level1.h" />
     <ClInclude Include="levels\Level2.h" />
     <ClInclude Include="levels\Level3.h" />
@@ -159,6 +161,7 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\crawler.png" />
     <Image Include="assets\default_background.png" />
     <Image Include="assets\default_font.png" />
     <Image Include="assets\default_npc.png" />

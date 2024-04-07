@@ -12,6 +12,8 @@
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../ShaderProgram.h"
 #include "../Utility.h"
+#include "../WalkerEntity.h"
+//#include "../CrawlerEntity.h"
 #include "Menu.h"
 
 // terrain map
@@ -30,6 +32,7 @@ const int MENU_DATA[] = {
 // sprite filepaths
 const char SPRITESHEET_FILEPATH[] = "assets/default_player.png",
            MAP_TILES_FILEPATH[] = "assets/default_platform.png";
+           //CRAWLER_FILEPATH[] = "assets/crawler.png";
 
 // audio filepaths
 const char MUSIC_FILEPATH[] = "assets/default_music.mp3";
@@ -72,6 +75,24 @@ void Menu::initialise() {
     e_player->m_walking[Entity::RIGHT] = new int[4] { 3, 7, 11, 15 };
     e_player->m_animation_indices = e_player->m_walking[Entity::RIGHT];
     e_player->setup_anim(4, 4, 4, 6);
+
+    //// ————— CRAWLER ————— //
+    //// create entity
+    //e_crawler = new CrawlerEntity(this,0,true);
+    //e_crawler->set_array_index(1);
+
+    //// setup basic attributes
+    //e_crawler->set_position(glm::vec3(2.0f, 4.0f, 0.0f));
+    //e_crawler->set_speed(3.0f);
+    //e_crawler->set_scale(glm::vec3(0.7f, 0.8f, 0.0f));
+    //e_crawler->set_sprite_scale(glm::vec3(0.7f, 0.8f, 0.0f));
+    //e_crawler->m_texture_id = Utility::load_texture(CRAWLER_FILEPATH);
+
+    //// setup walking animation
+    //e_crawler->m_walking[Entity::LEFT] = new int[4] { 0, 2 };
+    //e_crawler->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
+    //e_crawler->m_animation_indices = e_crawler->m_walking[0];
+    //e_crawler->setup_anim(2, 2, 2, 6);
 
     // ————— AUDIO ————— //
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
@@ -136,11 +157,12 @@ void Menu::process_input()
 
 void Menu::update(float delta_time) {
     e_player->update(delta_time, NULL, 0, m_state.map);
-
+    //e_crawler->update(delta_time, NULL, 0, m_state.map);
     if (e_player->get_position().x > 8.0f) m_changeScenes = true;
 }
 
 void Menu::render(ShaderProgram* program) {
     m_state.map->render(program);
     e_player->render(program);
+    //e_crawler->render(program);
 }

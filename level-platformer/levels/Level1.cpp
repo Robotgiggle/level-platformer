@@ -12,6 +12,8 @@
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../ShaderProgram.h"
 #include "../Utility.h"
+#include "../WalkerEntity.h"
+#include "../CrawlerEntity.h"
 #include "Level1.h"
 
 // terrain map
@@ -30,6 +32,7 @@ const int LV1_DATA[] = {
 // sprite filepaths
 const char SPRITESHEET_FILEPATH[] = "assets/default_player.png",
            NPC_FILEPATH[] = "assets/default_npc.png",
+           CRAWLER_FILEPATH[] = "assets/crawler.png",
            MAP_TILES_FILEPATH[] = "assets/default_platform.png";
 
 // audio filepaths
@@ -98,6 +101,29 @@ void Level1::initialise() {
     e_walker->m_animation_indices = e_walker->m_walking[Entity::LEFT];
     e_walker->setup_anim(4, 4, 4);
 
+    // ————— CRAWLERS ————— //
+    // create entities
+    e_crawler1 = new CrawlerEntity(this, 2, false);
+    e_crawler1->set_array_index(2);
+    e_crawler2 = new CrawlerEntity(this, 0, false);
+    e_crawler2->set_array_index(3);
+
+    // setup basic attributes
+    e_crawler1->set_position(glm::vec3(5.0f, 1.1f, 0.0f));
+    e_crawler2->set_position(glm::vec3(12.0f, 3.9f, 0.0f));
+    for (Entity* crawler : { e_crawler1, e_crawler2 }) {
+        crawler->set_speed(3.0f);
+        crawler->set_scale(glm::vec3(0.7f, 0.8f, 0.0f));
+        crawler->set_sprite_scale(glm::vec3(0.7f, 0.8f, 0.0f));
+        crawler->m_texture_id = Utility::load_texture(CRAWLER_FILEPATH);
+
+        // setup walking animation
+        crawler->m_walking[Entity::LEFT] = new int[4] { 0, 2 };
+        crawler->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
+        crawler->m_animation_indices = crawler->m_walking[0];
+        crawler->setup_anim(2, 2, 2, 6);
+    }
+
     // ————— AUDIO ————— //
     m_state.bgm = Mix_LoadMUS(MUSIC_FILEPATH);
     
@@ -158,10 +184,14 @@ void Level1::process_input()
 void Level1::update(float delta_time) {
     e_player->update(delta_time, NULL, 0, m_state.map);
     e_walker->update(delta_time, NULL, 0, m_state.map);
+    e_crawler1->update(delta_time, NULL, 0, m_state.map);
+    e_crawler2->update(delta_time, NULL, 0, m_state.map);
 }
 
 void Level1::render(ShaderProgram* program) {
     m_state.map->render(program);
     e_player->render(program);
     e_walker->render(program);
+    e_crawler1->render(program);
+    e_crawler2->render(program);
 }
