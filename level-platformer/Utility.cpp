@@ -19,6 +19,8 @@
 #include "ShaderProgram.h"
 #include <SDL_image.h>
 #include "stb_image.h"
+#include "Entity.h"
+#include "Map.h"
 #include "Utility.h"
 
 GLuint Utility::load_texture(const char* filepath)
@@ -105,4 +107,12 @@ void Utility::draw_text(ShaderProgram* program, GLuint font_texture_id, std::str
 
     glDisableVertexAttribArray(program->get_position_attribute());
     glDisableVertexAttribArray(program->get_tex_coordinate_attribute());
+}
+
+void Utility::move_background(Entity* player, Entity* background, Map* map) {
+    float xPos = player->get_position().x;
+    float rBound = map->get_right_bound();
+    if (xPos <= 4.5f) background->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
+    else if (xPos >= rBound - 5.0f) background->set_position(glm::vec3(rBound - 5.0f, 3.25f, 0.0f));
+    else background->set_position(glm::vec3(xPos, 3.25f, 0.0f));
 }

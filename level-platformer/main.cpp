@@ -103,7 +103,7 @@ void initialise()
 
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
 
-    startup_scene(2);
+    startup_scene(0);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

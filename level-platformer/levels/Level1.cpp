@@ -222,15 +222,11 @@ void Level1::update(float delta_time) {
     e_flyer2->update(delta_time, NULL, 0, m_state.map);
 
     // move background
-    float xPos = e_player->get_position().x;
-    float rBound = m_state.map->get_right_bound();
-    if (xPos <= 4.5f) e_background->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
-    else if (xPos >= rBound - 5.0f) e_background->set_position(glm::vec3(rBound - 5.0f, 3.25f, 0.0f));
-    else e_background->set_position(glm::vec3(xPos, 3.25f, 0.0f));
+    Utility::move_background(e_player, e_background, m_state.map);
     e_background->update(delta_time, NULL, 0, m_state.map);
 
     // check for level transition
-    if (xPos > rBound - 0.5f) m_changeScenes = true;
+    if (e_player->get_position().x > 29.0f) m_changeScenes = true;
 }
 
 void Level1::render(ShaderProgram* program) {

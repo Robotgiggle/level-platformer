@@ -12,6 +12,9 @@
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../ShaderProgram.h"
 #include "../Utility.h"
+#include "../WalkerEntity.h"
+#include "../CrawlerEntity.h"
+#include "../FlyerEntity.h"
 #include "Level3.h"
 
 // terrain map
@@ -29,8 +32,10 @@ const int LV3_DATA[] = {
 
 // sprite filepaths
 const char SPRITESHEET_FILEPATH[] = "assets/player.png",
+           BACKGROUND_FILEPATH[] = "assets/background.png",
            WALKER_FILEPATH[] = "assets/walker.png",
            CRAWLER_FILEPATH[] = "assets/crawler.png",
+           FLYER_FILEPATH[] = "assets/flyer.png",
            MAP_TILES_FILEPATH[] = "assets/map_tiles.png";
 
 // audio filepaths
@@ -50,6 +55,16 @@ void Level3::initialise() {
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
     m_state.map = new Map(LV3_WIDTH, LV3_HEIGHT, LV3_DATA, map_texture_id, 1.0f, 6, 4);
+
+    // ————— BACKGROUND ————— //
+    // create entity
+    e_background = new Entity(this);
+    e_background->set_array_index(1);
+
+    // setup basic attributes
+    e_background->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
+    e_background->set_sprite_scale(glm::vec3(10.0f, 7.5f, 0.0f));
+    e_background->m_texture_id = Utility::load_texture(BACKGROUND_FILEPATH);
 
     // ————— PLAYER ————— //
     // create entity
@@ -131,10 +146,19 @@ void Level3::process_input()
 }
 
 void Level3::update(float delta_time) {
+    // update entities
     e_player->update(delta_time, NULL, 0, m_state.map);
+
+    // move background
+    Utility::move_background(e_player, e_background, m_state.map);
+    e_background->update(delta_time, NULL, 0, m_state.map);
+
+    // check for level transition
+    if (e_player->get_position().x > 29.0f) m_changeScenes = true;
 }
 
 void Level3::render(ShaderProgram* program) {
+    e_background->render(program);
     m_state.map->render(program);
     e_player->render(program);
 }

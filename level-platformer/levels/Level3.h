@@ -6,6 +6,7 @@ class Level3 : public Scene {
 public:
     // ————— CUSTOM ENTITIES ————— //
     Entity*& e_player = m_state.entities[0];
+    Entity*& e_background = m_state.entities[1];
 
     // ————— METHODS ————— //
     Level3(int cap);
