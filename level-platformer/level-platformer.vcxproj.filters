@@ -33,19 +33,19 @@
     <ClCompile Include="Utility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Level1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Level3.cpp">
+    <ClCompile Include="levels\Level1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Level2.cpp">
+    <ClCompile Include="levels\Level2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Menu.cpp">
+    <ClCompile Include="levels\Level3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="levels\Menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -71,16 +71,16 @@
     <ClInclude Include="Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Level1.h">
+    <ClInclude Include="levels\Level1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Level3.h">
+    <ClInclude Include="levels\Level2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Level2.h">
+    <ClInclude Include="levels\Level3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Menu.h">
+    <ClInclude Include="levels\Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

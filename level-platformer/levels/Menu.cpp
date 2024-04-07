@@ -8,11 +8,11 @@
 #include <SDL_mixer.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include "glm/mat4x4.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "ShaderProgram.h"
+#include "../glm/mat4x4.hpp"
+#include "../glm/gtc/matrix_transform.hpp"
+#include "../ShaderProgram.h"
+#include "../Utility.h"
 #include "Menu.h"
-#include "Utility.h"
 
 // terrain map
 const int MENU_WIDTH = 10,

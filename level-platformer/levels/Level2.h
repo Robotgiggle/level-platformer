@@ -1,14 +1,14 @@
 #pragma once
-#include "Scene.h"
-#include "WalkerEntity.h"
+#include "../Scene.h"
+#include "../WalkerEntity.h"
 
-class Menu : public Scene {
+class Level2 : public Scene {
 public:
     // ————— CUSTOM ENTITIES ————— //
     Entity*& e_player = m_state.entities[0];
 
     // ————— METHODS ————— //
-    Menu(int cap);
+    Level2(int cap);
 
     void initialise() override;
     void process_input() override;

@@ -8,16 +8,16 @@
 #include <SDL_mixer.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include "glm/mat4x4.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "ShaderProgram.h"
-#include "Level2.h"
-#include "Utility.h"
+#include "../glm/mat4x4.hpp"
+#include "../glm/gtc/matrix_transform.hpp"
+#include "../ShaderProgram.h"
+#include "../Utility.h"
+#include "Level3.h"
 
 // terrain map
-const int LV2_WIDTH = 30,
-          LV2_HEIGHT = 7;
-const int LV2_DATA[] = {
+const int LV3_WIDTH = 30,
+          LV3_HEIGHT = 7;
+const int LV3_DATA[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -39,16 +39,16 @@ const char MUSIC_FILEPATH[] = "assets/default_music.mp3";
 const float ACC_OF_GRAVITY = -4.91f;
 
 // constructor definition
-Level2::Level2(int cap) : Scene(cap) {}
+Level3::Level3(int cap) : Scene(cap) {}
 
 // other methods
-void Level2::initialise() {
+void Level3::initialise() {
     // ————— NEXT SCENE ————— //
-    m_state.nextSceneID = 3;
+    m_state.nextSceneID = 4;
 
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
-    m_state.map = new Map(LV2_WIDTH, LV2_HEIGHT, LV2_DATA, map_texture_id, 1.0f, 2, 1);
+    m_state.map = new Map(LV3_WIDTH, LV3_HEIGHT, LV3_DATA, map_texture_id, 1.0f, 2, 1);
 
     // ————— PLAYER ————— //
     // create entity
@@ -81,7 +81,7 @@ void Level2::initialise() {
     Mix_VolumeChunk(m_state.jumpSfx, MIX_MAX_VOLUME / 2);
 }
 
-void Level2::process_event(SDL_Event event) {
+void Level3::process_event(SDL_Event event) {
     // process event triggers
     switch (event.type) {
     case SDL_KEYDOWN:
@@ -99,7 +99,7 @@ void Level2::process_event(SDL_Event event) {
     }
 }
 
-void Level2::process_input()
+void Level3::process_input()
 {
     // reset forced-movement if no player input
     e_player->set_movement(glm::vec3(0.0f));
@@ -131,13 +131,11 @@ void Level2::process_input()
     }
 }
 
-void Level2::update(float delta_time) {
+void Level3::update(float delta_time) {
     e_player->update(delta_time, NULL, 0, m_state.map);
-    e_walker->update(delta_time, NULL, 0, m_state.map);
 }
 
-void Level2::render(ShaderProgram* program) {
+void Level3::render(ShaderProgram* program) {
     m_state.map->render(program);
     e_player->render(program);
-    e_walker->render(program);
 }

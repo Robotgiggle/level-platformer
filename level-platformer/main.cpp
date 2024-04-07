@@ -13,14 +13,10 @@
 #include "ShaderProgram.h"
 #include "Utility.h"
 #include "Scene.h"
-#include "Menu.h"
-#include "Level1.h"
-#include "Level2.h"
-#include "Level3.h"
-//#include "Entity.h"
-//#include "WalkerEntity.h"
-//#include "Map.h"
-
+#include "levels/Menu.h"
+#include "levels/Level1.h"
+#include "levels/Level2.h"
+#include "levels/Level3.h"
 
 // ————— CONSTANTS ————— //
 
