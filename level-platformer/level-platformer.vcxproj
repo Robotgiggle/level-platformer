@@ -165,7 +165,6 @@
   <ItemGroup>
     <Image Include="assets\background.png" />
     <Image Include="assets\crawler.png" />
-    <Image Include="assets\default_background.png" />
     <Image Include="assets\default_font.png" />
     <Image Include="assets\flyer.png" />
     <Image Include="assets\map_tiles.png" />

@@ -55,7 +55,6 @@ void Menu::initialise() {
     // ————— BACKGROUND ————— //
     // create entity
     e_background = new Entity(this);
-    e_background->set_array_index(2);
 
     // setup basic attributes
     e_background->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
@@ -67,7 +66,6 @@ void Menu::initialise() {
     // ————— PLAYER ————— //
     // create entity
     e_player = new Entity(this);
-    e_player->set_array_index(0);
 
     // setup basic attributes
     e_player->set_motion_type(Entity::SIDE_ON);
@@ -85,24 +83,6 @@ void Menu::initialise() {
     e_player->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
     e_player->m_animation_indices = e_player->m_walking[Entity::RIGHT];
     e_player->setup_anim(2, 2, 2, 6);
-
-    //// ————— CRAWLER ————— //
-    //// create entity
-    //e_crawler = new CrawlerEntity(this,0,true);
-    //e_crawler->set_array_index(1);
-
-    //// setup basic attributes
-    //e_crawler->set_position(glm::vec3(2.0f, 4.0f, 0.0f));
-    //e_crawler->set_speed(3.0f);
-    //e_crawler->set_scale(glm::vec3(0.7f, 0.8f, 0.0f));
-    //e_crawler->set_sprite_scale(glm::vec3(0.7f, 0.8f, 0.0f));
-    //e_crawler->m_texture_id = Utility::load_texture(CRAWLER_FILEPATH);
-
-    //// setup walking animation
-    //e_crawler->m_walking[Entity::LEFT] = new int[4] { 0, 2 };
-    //e_crawler->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
-    //e_crawler->m_animation_indices = e_crawler->m_walking[0];
-    //e_crawler->setup_anim(2, 2, 2, 6);
 
     // ————— AUDIO ————— //
     m_state.bgm = Mix_LoadMUS(MUSIC_FILEPATH);

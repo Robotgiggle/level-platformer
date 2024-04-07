@@ -60,7 +60,7 @@ void Utility::draw_text(ShaderProgram* program, GLuint font_texture_id, std::str
     std::vector<float> vertices;
     std::vector<float> texture_coordinates;
 
-    for (int i = 0; i < text.size(); i++) {
+    for (size_t i = 0; i < text.size(); i++) {
         // 1. Get their index in the spritesheet, as well as their offset (i.e. their position
         //    relative to the whole sentence)
         int spritesheet_index = (int)text[i];  // ascii value of character

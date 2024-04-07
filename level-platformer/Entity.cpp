@@ -106,8 +106,19 @@ void Entity::draw_sprite_from_texture_atlas(ShaderProgram* program, GLuint textu
 
 void Entity::update(float delta_time, Entity* solid_entities, int solid_entity_count, Map* map)
 {
-    if (!m_is_active) return;
+    // ––––– INDEXING ––––– //
+    if (m_array_index == -1) {
+        for (int i = 0; i < m_scene->m_entityCap; i++) {
+            if (m_scene->m_state.entities[i] == this) {
+                m_array_index = i;
+                break;
+            }
+        }
+    }
+    assert((m_array_index != -1));
 
+    // ––––– BASICS ––––– //
+    if (!m_is_active) return;
     m_collided_top = false;
     m_collided_bottom = false;
     m_collided_left = false;

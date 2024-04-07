@@ -59,7 +59,6 @@ void Level1::initialise() {
     // ————— BACKGROUND ————— //
     // create entity
     e_background = new Entity(this);
-    e_background->set_array_index(1);
 
     // setup basic attributes
     e_background->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
@@ -69,7 +68,6 @@ void Level1::initialise() {
     // ————— PLAYER ————— //
     // create entity
     e_player = new Entity(this);
-    e_player->set_array_index(0);
 
     // setup basic attributes
     e_player->set_motion_type(Entity::SIDE_ON);
@@ -91,7 +89,6 @@ void Level1::initialise() {
     // ————— WALKER ————— //
     // create entity
     e_walker = new WalkerEntity(this,0);
-    e_walker->set_array_index(2);
 
     // setup basic attributes
     e_walker->set_motion_type(Entity::SIDE_ON);
@@ -112,9 +109,7 @@ void Level1::initialise() {
     // ————— CRAWLERS ————— //
     // create entities
     e_crawler1 = new CrawlerEntity(this, 2, false);
-    e_crawler1->set_array_index(3);
     e_crawler2 = new CrawlerEntity(this, 0, false);
-    e_crawler2->set_array_index(4);
 
     // setup basic attributes
     e_crawler1->set_position(glm::vec3(5.0f, 1.1f, 0.0f));
@@ -135,9 +130,7 @@ void Level1::initialise() {
     // ————— FLYERS ————— //
     // create entities
     e_flyer1 = new FlyerEntity(this, 0.5f, 0.75f, 4.0f);
-    e_flyer1->set_array_index(5);
     e_flyer2 = new FlyerEntity(this, 0.5f, 0.75f, 4.0f);
-    e_flyer2->set_array_index(6);
 
     // setup basic attributes
     e_flyer1->set_position(glm::vec3(22.0f, 5.0f, 0.0f));

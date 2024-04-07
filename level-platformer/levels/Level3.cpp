@@ -59,7 +59,6 @@ void Level3::initialise() {
     // ————— BACKGROUND ————— //
     // create entity
     e_background = new Entity(this);
-    e_background->set_array_index(1);
 
     // setup basic attributes
     e_background->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
@@ -69,7 +68,6 @@ void Level3::initialise() {
     // ————— PLAYER ————— //
     // create entity
     e_player = new Entity(this);
-    e_player->set_array_index(0);
 
     // setup basic attributes
     e_player->set_motion_type(Entity::SIDE_ON);

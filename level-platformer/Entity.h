@@ -59,7 +59,6 @@ public:
     // ————— METHODS ————— //
     Entity(Scene* scene);
     ~Entity();
-
     void despawn();
 
     void setup_anim(int cols = 0, int rows = 0, int frames = 0, int fps = 4,

@@ -100,9 +100,6 @@
     <Image Include="assets\default_font.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="assets\default_background.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="assets\crawler.png">
       <Filter>Resource Files</Filter>
     </Image>
