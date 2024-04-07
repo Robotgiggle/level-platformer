@@ -29,8 +29,9 @@ const int LV3_DATA[] = {
 
 // sprite filepaths
 const char SPRITESHEET_FILEPATH[] = "assets/default_player.png",
-           NPC_FILEPATH[] = "assets/default_npc.png",
-           MAP_TILES_FILEPATH[] = "assets/default_platform.png";
+           WALKER_FILEPATH[] = "assets/walker.png",
+           CRAWLER_FILEPATH[] = "assets/crawler.png",
+           MAP_TILES_FILEPATH[] = "assets/map_tiles.png";
 
 // audio filepaths
 const char MUSIC_FILEPATH[] = "assets/default_music.mp3";
@@ -48,7 +49,7 @@ void Level3::initialise() {
 
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
-    m_state.map = new Map(LV3_WIDTH, LV3_HEIGHT, LV3_DATA, map_texture_id, 1.0f, 2, 1);
+    m_state.map = new Map(LV3_WIDTH, LV3_HEIGHT, LV3_DATA, map_texture_id, 1.0f, 6, 4);
 
     // ————— PLAYER ————— //
     // create entity
@@ -61,18 +62,16 @@ void Level3::initialise() {
     e_player->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY, 0.0f));
     e_player->set_speed(1.8f);
     e_player->set_rot_speed(1.0f);
-    e_player->set_scale(glm::vec3(0.765f, 0.9f, 0.0f));
-    e_player->set_sprite_scale(glm::vec3(0.765f, 0.9f, 0.0f));
+    e_player->set_scale(glm::vec3(0.715f, 0.88f, 0.0f));
+    e_player->set_sprite_scale(glm::vec3(0.715f, 0.88f, 0.0f));
     e_player->m_texture_id = Utility::load_texture(SPRITESHEET_FILEPATH);
     e_player->m_jumping_power = 4.5f;
 
     // setup walking animation
-    e_player->m_walking[Entity::DOWN] = new int[4] { 0, 4, 8, 12 };
-    e_player->m_walking[Entity::LEFT] = new int[4] { 1, 5, 9, 13 };
-    e_player->m_walking[Entity::UP] = new int[4] { 2, 6, 10, 14 };
-    e_player->m_walking[Entity::RIGHT] = new int[4] { 3, 7, 11, 15 };
+    e_player->m_walking[Entity::LEFT] = new int[4] { 0, 2 };
+    e_player->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
     e_player->m_animation_indices = e_player->m_walking[Entity::RIGHT];
-    e_player->setup_anim(4, 4, 4, 6);
+    e_player->setup_anim(2, 2, 2, 6);
 
     // ————— AUDIO ————— //
     m_state.bgm = Mix_LoadMUS(MUSIC_FILEPATH);

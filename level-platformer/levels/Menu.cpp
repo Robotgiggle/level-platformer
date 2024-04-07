@@ -26,13 +26,12 @@ const int MENU_DATA[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
 };
 
 // sprite filepaths
-const char SPRITESHEET_FILEPATH[] = "assets/default_player.png",
-           MAP_TILES_FILEPATH[] = "assets/default_platform.png";
-           //CRAWLER_FILEPATH[] = "assets/crawler.png";
+const char SPRITESHEET_FILEPATH[] = "assets/player.png",
+           MAP_TILES_FILEPATH[] = "assets/map_tiles.png";
 
 // audio filepaths
 const char MUSIC_FILEPATH[] = "assets/default_music.mp3";
@@ -50,7 +49,7 @@ void Menu::initialise() {
 
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
-    m_state.map = new Map(MENU_WIDTH, MENU_HEIGHT, MENU_DATA, map_texture_id, 1.0f, 2, 1);
+    m_state.map = new Map(MENU_WIDTH, MENU_HEIGHT, MENU_DATA, map_texture_id, 1.0f, 6, 4);
 
     // ————— PLAYER ————— //
     // create entity
@@ -63,18 +62,16 @@ void Menu::initialise() {
     e_player->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY, 0.0f));
     e_player->set_speed(1.8f);
     e_player->set_rot_speed(1.0f);
-    e_player->set_scale(glm::vec3(0.765f, 0.9f, 0.0f));
-    e_player->set_sprite_scale(glm::vec3(0.765f, 0.9f, 0.0f));
+    e_player->set_scale(glm::vec3(0.715f, 0.88f, 0.0f));
+    e_player->set_sprite_scale(glm::vec3(0.715f, 0.88f, 0.0f));
     e_player->m_texture_id = Utility::load_texture(SPRITESHEET_FILEPATH);
     e_player->m_jumping_power = 4.5f;
 
     // setup walking animation
-    e_player->m_walking[Entity::DOWN] = new int[4] { 0, 4, 8, 12 };
-    e_player->m_walking[Entity::LEFT] = new int[4] { 1, 5, 9, 13 };
-    e_player->m_walking[Entity::UP] = new int[4] { 2, 6, 10, 14 };
-    e_player->m_walking[Entity::RIGHT] = new int[4] { 3, 7, 11, 15 };
+    e_player->m_walking[Entity::LEFT] = new int[4] { 0, 2 };
+    e_player->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
     e_player->m_animation_indices = e_player->m_walking[Entity::RIGHT];
-    e_player->setup_anim(4, 4, 4, 6);
+    e_player->setup_anim(2, 2, 2, 6);
 
     //// ————— CRAWLER ————— //
     //// create entity

@@ -48,6 +48,9 @@ void Map::build()
 
             // If the tile number is 0 i.e. not solid, skip to the next one
             if (tile == 0) continue;
+            
+            // Shift index down by 1, so the first slot of the tilemap doesn't need to be empty
+            tile -= 1;
 
             // Otherwise, calculate its UV-coordinated
             float u_coord = (float)(tile % m_tilemap_width) / (float)m_tilemap_width;
