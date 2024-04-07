@@ -11,6 +11,7 @@
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
+#include "Scene.h"
 #include "Entity.h"
 
 Entity::Entity(Scene* scene)
@@ -38,6 +39,11 @@ Entity::~Entity()
         delete[] m_walking[i];
     }
     if (indices) delete m_animation_indices;
+}
+
+void Entity::despawn() {
+    m_scene->m_state.entities[m_array_index] = nullptr;
+    delete this;
 }
 
 void Entity::setup_anim(int cols, int rows, int frames, int fps, bool always, int index, float time) {

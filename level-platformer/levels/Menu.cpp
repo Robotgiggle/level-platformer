@@ -31,6 +31,7 @@ const int MENU_DATA[] = {
 
 // sprite filepaths
 const char SPRITESHEET_FILEPATH[] = "assets/player.png",
+           BACKGROUND_FILEPATH[] = "assets/background.png",
            MAP_TILES_FILEPATH[] = "assets/map_tiles.png";
 
 // audio filepaths
@@ -50,6 +51,18 @@ void Menu::initialise() {
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
     m_state.map = new Map(MENU_WIDTH, MENU_HEIGHT, MENU_DATA, map_texture_id, 1.0f, 6, 4);
+
+    // ————— BACKGROUND ————— //
+    // create entity
+    e_background = new Entity(this);
+    e_background->set_array_index(2);
+
+    // setup basic attributes
+    e_background->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
+    e_background->set_sprite_scale(glm::vec3(10.0f, 7.5f, 0.0f));
+    e_background->m_texture_id = Utility::load_texture(BACKGROUND_FILEPATH);
+
+    e_background->update(0.0f, NULL, 0, m_state.map);
 
     // ————— PLAYER ————— //
     // create entity
@@ -92,8 +105,6 @@ void Menu::initialise() {
     //e_crawler->setup_anim(2, 2, 2, 6);
 
     // ————— AUDIO ————— //
-    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
-
     m_state.bgm = Mix_LoadMUS(MUSIC_FILEPATH);
     Mix_PlayMusic(m_state.bgm, -1);
     Mix_VolumeMusic(MIX_MAX_VOLUME / 3);
@@ -154,12 +165,11 @@ void Menu::process_input()
 
 void Menu::update(float delta_time) {
     e_player->update(delta_time, NULL, 0, m_state.map);
-    //e_crawler->update(delta_time, NULL, 0, m_state.map);
     if (e_player->get_position().x > 8.0f) m_changeScenes = true;
 }
 
 void Menu::render(ShaderProgram* program) {
+    e_background->render(program);
     m_state.map->render(program);
     e_player->render(program);
-    //e_crawler->render(program);
 }

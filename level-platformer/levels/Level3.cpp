@@ -28,7 +28,7 @@ const int LV3_DATA[] = {
 };
 
 // sprite filepaths
-const char SPRITESHEET_FILEPATH[] = "assets/default_player.png",
+const char SPRITESHEET_FILEPATH[] = "assets/player.png",
            WALKER_FILEPATH[] = "assets/walker.png",
            CRAWLER_FILEPATH[] = "assets/crawler.png",
            MAP_TILES_FILEPATH[] = "assets/map_tiles.png";

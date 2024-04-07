@@ -6,6 +6,7 @@ public:
     // ————— CUSTOM ENTITIES ————— //
     Entity*& e_player = m_state.entities[0];
     Entity*& e_crawler = m_state.entities[1];
+    Entity*& e_background = m_state.entities[2];
 
     // ————— METHODS ————— //
     Menu(int cap);

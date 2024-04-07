@@ -60,6 +60,8 @@ public:
     Entity(Scene* scene);
     ~Entity();
 
+    void despawn();
+
     void setup_anim(int cols = 0, int rows = 0, int frames = 0, int fps = 4,
                     bool always = false, int index = 0, float time = 0.0f);
     void draw_sprite_from_texture_atlas(ShaderProgram* program, GLuint texture_id, int index);
@@ -84,6 +86,7 @@ public:
     glm::vec3  const get_velocity()     const { return m_velocity; };
     glm::vec3  const get_acceleration() const { return m_acceleration; };
     glm::vec3  const get_movement()     const { return m_movement; };
+    Scene*     const get_scene()        const { return m_scene; };
     float      const get_rotation()     const { return m_rotation; };
     float      const get_angle()        const { return m_angle; };
     float      const get_rot_speed()    const { return m_rot_speed; };

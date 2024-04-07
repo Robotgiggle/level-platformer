@@ -14,6 +14,7 @@
 #include "../Utility.h"
 #include "../WalkerEntity.h"
 #include "../CrawlerEntity.h"
+#include "../FlyerEntity.h"
 #include "Level1.h"
 
 // terrain map
@@ -31,8 +32,10 @@ const int LV1_DATA[] = {
 
 // sprite filepaths
 const char SPRITESHEET_FILEPATH[] = "assets/player.png",
+           BACKGROUND_FILEPATH[] = "assets/background.png",
            WALKER_FILEPATH[] = "assets/walker.png",
            CRAWLER_FILEPATH[] = "assets/crawler.png",
+           FLYER_FILEPATH[] = "assets/flyer.png",
            MAP_TILES_FILEPATH[] = "assets/map_tiles.png";
 
 // audio filepaths
@@ -52,6 +55,16 @@ void Level1::initialise() {
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
     m_state.map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 6, 4);
+
+    // ————— BACKGROUND ————— //
+    // create entity
+    e_background = new Entity(this);
+    e_background->set_array_index(1);
+
+    // setup basic attributes
+    e_background->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
+    e_background->set_sprite_scale(glm::vec3(10.0f, 7.5f, 0.0f));
+    e_background->m_texture_id = Utility::load_texture(BACKGROUND_FILEPATH);
 
     // ————— PLAYER ————— //
     // create entity
@@ -78,7 +91,7 @@ void Level1::initialise() {
     // ————— WALKER ————— //
     // create entity
     e_walker = new WalkerEntity(this,0);
-    e_walker->set_array_index(1);
+    e_walker->set_array_index(2);
 
     // setup basic attributes
     e_walker->set_motion_type(Entity::SIDE_ON);
@@ -86,12 +99,11 @@ void Level1::initialise() {
     e_walker->set_movement(glm::vec3(0.0f));
     e_walker->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY, 0.0f));
     e_walker->set_speed(2.0f);
-    e_walker->set_rot_speed(1.0f);
     e_walker->set_scale(glm::vec3(0.765f, 0.9f, 0.0f));
     e_walker->set_sprite_scale(glm::vec3(0.765f, 0.9f, 0.0f));
     e_walker->m_texture_id = Utility::load_texture(WALKER_FILEPATH);
 
-    //// setup walking animation
+    // setup walking animation
     e_walker->m_walking[Entity::LEFT] = new int[4] { 0, 2 };
     e_walker->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
     e_walker->m_animation_indices = e_walker->m_walking[Entity::RIGHT];
@@ -100,9 +112,9 @@ void Level1::initialise() {
     // ————— CRAWLERS ————— //
     // create entities
     e_crawler1 = new CrawlerEntity(this, 2, false);
-    e_crawler1->set_array_index(2);
+    e_crawler1->set_array_index(3);
     e_crawler2 = new CrawlerEntity(this, 0, false);
-    e_crawler2->set_array_index(3);
+    e_crawler2->set_array_index(4);
 
     // setup basic attributes
     e_crawler1->set_position(glm::vec3(5.0f, 1.1f, 0.0f));
@@ -116,8 +128,31 @@ void Level1::initialise() {
         // setup walking animation
         crawler->m_walking[Entity::LEFT] = new int[4] { 0, 2 };
         crawler->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
-        crawler->m_animation_indices = crawler->m_walking[0];
+        crawler->m_animation_indices = crawler->m_walking[Entity::LEFT];
         crawler->setup_anim(2, 2, 2, 6);
+    }
+
+    // ————— FLYERS ————— //
+    // create entities
+    e_flyer1 = new FlyerEntity(this, 0.5f, 0.75f, 4.0f);
+    e_flyer1->set_array_index(5);
+    e_flyer2 = new FlyerEntity(this, 0.5f, 0.75f, 4.0f);
+    e_flyer2->set_array_index(6);
+
+    // setup basic attributes
+    e_flyer1->set_position(glm::vec3(22.0f, 5.0f, 0.0f));
+    e_flyer2->set_position(glm::vec3(27.0f, 5.0f, 0.0f));
+    for (Entity* flyer : { e_flyer1, e_flyer2 }) {
+        flyer->set_speed(5.5f);
+        flyer->set_scale(glm::vec3(0.55f, 0.55f, 0.0f));
+        flyer->set_sprite_scale(glm::vec3(0.84f, 0.63f, 0.0f));
+        flyer->m_texture_id = Utility::load_texture(FLYER_FILEPATH);
+
+        // setup flapping animation
+        flyer->m_walking[Entity::LEFT] = new int[4] { 0, 2, 4 };
+        flyer->m_walking[Entity::RIGHT] = new int[4] { 1, 3, 5 };
+        flyer->m_animation_indices = e_flyer1->m_walking[Entity::LEFT];
+        flyer->setup_anim(2, 3, 3, 4, true);
     }
 
     // ————— AUDIO ————— //
@@ -178,16 +213,33 @@ void Level1::process_input()
 }
 
 void Level1::update(float delta_time) {
+    // update entities
     e_player->update(delta_time, NULL, 0, m_state.map);
     e_walker->update(delta_time, NULL, 0, m_state.map);
     e_crawler1->update(delta_time, NULL, 0, m_state.map);
     e_crawler2->update(delta_time, NULL, 0, m_state.map);
+    e_flyer1->update(delta_time, NULL, 0, m_state.map);
+    e_flyer2->update(delta_time, NULL, 0, m_state.map);
+
+    // move background
+    float xPos = e_player->get_position().x;
+    float rBound = m_state.map->get_right_bound();
+    if (xPos <= 4.5f) e_background->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
+    else if (xPos >= rBound - 5.0f) e_background->set_position(glm::vec3(rBound - 5.0f, 3.25f, 0.0f));
+    else e_background->set_position(glm::vec3(xPos, 3.25f, 0.0f));
+    e_background->update(delta_time, NULL, 0, m_state.map);
+
+    // check for level transition
+    if (xPos > rBound - 0.5f) m_changeScenes = true;
 }
 
 void Level1::render(ShaderProgram* program) {
+    e_background->render(program);
     m_state.map->render(program);
     e_player->render(program);
     e_walker->render(program);
     e_crawler1->render(program);
     e_crawler2->render(program);
+    e_flyer1->render(program);
+    e_flyer2->render(program);
 }

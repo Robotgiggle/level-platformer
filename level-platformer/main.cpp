@@ -101,7 +101,9 @@ void initialise()
 
     glClearColor(BG_RED, BG_BLUE, BG_GREEN, BG_OPACITY);
 
-    startup_scene(0);
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+
+    startup_scene(2);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -148,13 +150,14 @@ void update()
 
     // ————— CAMERA TRACKING ————— //
     float xPos = g_currentScene->get_player()->get_position().x;
-    float lBound = g_currentScene->m_state.map->get_left_bound();
     float rBound = g_currentScene->m_state.map->get_right_bound();
-    if (xPos > lBound + 5.0f && xPos < rBound - 5.0f) {
-        // only scroll camera if we aren't near the edge of the screen
+    if (xPos <= 4.5f) {
+        g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-4.5, -3.25f, 0.0f));
+    } else if (xPos >= rBound - 5.0f) {
+        g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(5.0f - rBound, -3.25f, 0.0f));
+    } else {
         g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xPos, -3.25f, 0.0f));
     }
-    
 }
 
 void render()

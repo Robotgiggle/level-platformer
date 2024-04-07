@@ -16,7 +16,7 @@
 
 CrawlerEntity::CrawlerEntity(Scene* scene, int state, bool dir) : Entity(scene) {
 	m_ai_state = static_cast<AIState>(state % 4);
-	set_angle(90 * (state % 4));
+	set_angle(90.f * (state % 4));
 	m_clockwise = dir;
 	m_edge_check_offsets[GROUND_DOWN] = glm::vec3((m_clockwise) ? 0.01f : -0.01f, -0.51f * get_height(), 0.0f);
 	m_edge_check_offsets[GROUND_RIGHT] = glm::vec3(0.51f * get_height(), (m_clockwise) ? 0.01f : -0.01f, 0.0f);
