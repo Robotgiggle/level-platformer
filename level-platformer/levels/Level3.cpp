@@ -21,13 +21,13 @@
 const int LV3_WIDTH = 30,
           LV3_HEIGHT = 7;
 const int LV3_DATA[] = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    0,  0,  0,  0,  0,  8, 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2,  3,  3,  4,  0,  0,  0,  8,  9,
+    0,  0,  0,  0,  8, 12, 16,  0,  0,  0,  0,  0,  0,  0,  0,  2,  3,  3,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0, 14, 17,
+    9,  9,  9,  9, 12, 17, 16,  0,  0,  2,  3,  3,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 14, 17,
+   17, 17, 17, 17, 17, 17, 16,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 14, 17,
 };
 
 // sprite filepaths
@@ -85,6 +85,77 @@ void Level3::initialise() {
     e_player->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
     e_player->m_animation_indices = e_player->m_walking[Entity::RIGHT];
     e_player->setup_anim(2, 2, 2, 6);
+
+    // ————— WALKERS ————— //
+    // create entity
+    e_walker1 = new WalkerEntity(this, 1);
+    e_walker2 = new WalkerEntity(this, 1);
+    e_walker3 = new WalkerEntity(this, 1);
+
+    // setup basic attributes
+    e_walker1->set_position(glm::vec3(9.0f, 2.0f, 0.0f));
+    e_walker2->set_position(glm::vec3(15.0f, 3.0f, 0.0f));
+    e_walker3->set_position(glm::vec3(21.0f, 4.0f, 0.0f));
+    for (Entity* walker : { e_walker1, e_walker2, e_walker3 }) {
+        walker->set_motion_type(Entity::SIDE_ON);
+        walker->set_movement(glm::vec3(0.0f));
+        walker->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY, 0.0f));
+        walker->set_speed(2.0f);
+        walker->set_scale(glm::vec3(0.765f, 0.9f, 0.0f));
+        walker->set_sprite_scale(glm::vec3(0.765f, 0.9f, 0.0f));
+        walker->m_texture_id = Utility::load_texture(WALKER_FILEPATH);
+
+        // setup walking animation
+        walker->m_walking[Entity::LEFT] = new int[4] { 0, 2 };
+        walker->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
+        walker->m_animation_indices = walker->m_walking[Entity::RIGHT];
+        walker->setup_anim(2, 2, 2, 6);
+    }
+
+    // ————— CRAWLERS ————— //
+    // create entities
+    e_crawler1 = new CrawlerEntity(this, 0, true);
+    e_crawler2 = new CrawlerEntity(this, 2, true);
+
+    // setup basic attributes
+    e_crawler1->set_position(glm::vec3(12.0f, 4.9f, 0.0f));
+    e_crawler2->set_position(glm::vec3(11.0f, 3.1f, 0.0f));
+    for (Entity* crawler : { e_crawler1, e_crawler2 }) {
+        crawler->set_speed(1.87f);
+        crawler->set_scale(glm::vec3(0.7f, 0.8f, 0.0f));
+        crawler->set_sprite_scale(glm::vec3(0.7f, 0.8f, 0.0f));
+        crawler->m_texture_id = Utility::load_texture(CRAWLER_FILEPATH);
+
+        // setup walking animation
+        crawler->m_walking[Entity::LEFT] = new int[4] { 0, 2 };
+        crawler->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
+        crawler->setup_anim(2, 2, 2, 6);
+    }
+    e_crawler1->m_animation_indices = e_crawler1->m_walking[Entity::RIGHT];
+    e_crawler2->m_animation_indices = e_crawler2->m_walking[Entity::LEFT];
+
+    // ————— FLYERS ————— //
+    // create entities
+    e_flyer1 = new FlyerEntity(this, 0.5f, 0.75f, 4.0f);
+    e_flyer2 = new FlyerEntity(this, 0.5f, 0.75f, 4.0f);
+    e_flyer3 = new FlyerEntity(this, 0.5f, 0.75f, 4.0f);
+
+    // setup basic attributes
+    e_flyer1->set_position(glm::vec3(7.0f, 6.0f, 0.0f));
+    e_flyer2->set_position(glm::vec3(20.0f, 5.0f, 0.0f));
+    e_flyer3->set_position(glm::vec3(26.0f, 6.0f, 0.0f));
+    for (Entity* flyer : { e_flyer1, e_flyer2, e_flyer3 }) {
+        flyer->set_speed(5.5f);
+        flyer->set_scale(glm::vec3(0.55f, 0.55f, 0.0f));
+        flyer->set_sprite_scale(glm::vec3(0.84f, 0.63f, 0.0f));
+        flyer->m_texture_id = Utility::load_texture(FLYER_FILEPATH);
+
+        // setup flapping animation
+        flyer->m_walking[Entity::LEFT] = new int[4] { 0, 2, 4 };
+        flyer->m_walking[Entity::RIGHT] = new int[4] { 1, 3, 5 };
+        flyer->m_animation_indices = e_flyer1->m_walking[Entity::LEFT];
+        flyer->setup_anim(2, 3, 3, 4, true);
+    }
 
     // ————— AUDIO ————— //
     m_state.bgm = Mix_LoadMUS(MUSIC_FILEPATH);
@@ -145,18 +216,18 @@ void Level3::process_input()
 
 void Level3::update(float delta_time) {
     // update entities
-    e_player->update(delta_time, NULL, 0, m_state.map);
+    for (int i = 1; i < 10; i++) m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
 
     // move background
     Utility::move_background(e_player, e_background, m_state.map);
     e_background->update(delta_time, NULL, 0, m_state.map);
 
     // check for level transition
-    if (e_player->get_position().x > 29.0f) m_changeScenes = true;
+    if (e_player->get_position().x > 29.0f) m_globalInfo->changeScenes = true;
 }
 
 void Level3::render(ShaderProgram* program) {
     e_background->render(program);
     m_state.map->render(program);
-    e_player->render(program);
+    for (int i = 1; i < 10; i++) m_state.entities[i]->render(program);
 }

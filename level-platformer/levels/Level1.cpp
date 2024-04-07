@@ -207,28 +207,18 @@ void Level1::process_input()
 
 void Level1::update(float delta_time) {
     // update entities
-    e_player->update(delta_time, NULL, 0, m_state.map);
-    e_walker->update(delta_time, NULL, 0, m_state.map);
-    e_crawler1->update(delta_time, NULL, 0, m_state.map);
-    e_crawler2->update(delta_time, NULL, 0, m_state.map);
-    e_flyer1->update(delta_time, NULL, 0, m_state.map);
-    e_flyer2->update(delta_time, NULL, 0, m_state.map);
+    for (int i = 1; i < 7; i++) m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
 
     // move background
     Utility::move_background(e_player, e_background, m_state.map);
     e_background->update(delta_time, NULL, 0, m_state.map);
 
     // check for level transition
-    if (e_player->get_position().x > 29.0f) m_changeScenes = true;
+    if (e_player->get_position().x > 29.0f) m_globalInfo->changeScenes = true;
 }
 
 void Level1::render(ShaderProgram* program) {
     e_background->render(program);
     m_state.map->render(program);
-    e_player->render(program);
-    e_walker->render(program);
-    e_crawler1->render(program);
-    e_crawler2->render(program);
-    e_flyer1->render(program);
-    e_flyer2->render(program);
+    for (int i = 1; i < 7; i++) m_state.entities[i]->render(program);
 }

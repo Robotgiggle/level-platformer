@@ -45,12 +45,12 @@ const float MILLISECONDS_IN_SECOND = 1000.0;
 const float FIXED_TIMESTEP = 0.0166666f;
 
 // scenes
-const int NUM_OF_SCENES = 1;
+const int NUM_OF_SCENES = 4;
 Scene* const ALL_SCENES[] = {
     new Menu(10),
-    new Level1(60),
-    new Level2(60),
-    new Level3(60)
+    new Level1(20),
+    new Level2(20),
+    new Level3(20)
 };
 
 // ————— VARIABLES ————— //
@@ -60,7 +60,9 @@ SDL_Window* g_displayWindow;
 ShaderProgram g_shaderProgram;
 glm::mat4 g_viewMatrix, g_projectionMatrix;
 Scene* g_currentScene;
-bool g_gameIsRunning = true;
+
+// global values visible to scenes (defined in Scene.h)
+GlobalInfo g_globalInfo;
 
 // times
 float g_previousTicks = 0.0f;
@@ -68,6 +70,7 @@ float g_timeAccumulator = 0.0f;
 
 // ———— GENERAL FUNCTIONS ———— //
 void startup_scene(int index) {
+    g_globalInfo.changeScenes = false;
     g_currentScene = ALL_SCENES[index];
     g_currentScene->initialise();
 }
@@ -103,6 +106,8 @@ void initialise()
 
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
 
+    for (Scene* scene : ALL_SCENES) scene->set_globalInfo(&g_globalInfo);
+    g_globalInfo.gameIsRunning = true;
     startup_scene(0);
 
     glEnable(GL_BLEND);
@@ -118,7 +123,7 @@ void process_input()
         switch (event.type) {
         case SDL_QUIT:
         case SDL_WINDOWEVENT_CLOSE:
-            g_gameIsRunning = false;
+            g_globalInfo.gameIsRunning = false;
             break;
         default:
             g_currentScene->process_event(event);
@@ -143,8 +148,7 @@ void update()
     while (g_timeAccumulator >= FIXED_TIMESTEP)
     {
         g_currentScene->update(FIXED_TIMESTEP);
-        if (!g_currentScene->m_gameIsRunning) g_gameIsRunning = false;
-        if (g_currentScene->m_changeScenes) startup_scene(g_currentScene->m_state.nextSceneID);
+        if (g_globalInfo.changeScenes) startup_scene(g_currentScene->m_state.nextSceneID);
         g_timeAccumulator -= FIXED_TIMESTEP;
     }
 
@@ -172,7 +176,7 @@ void render()
 
 void shutdown() { 
     SDL_Quit();
-    for (int i = 0; i < NUM_OF_SCENES; i++) delete ALL_SCENES[i];
+    for (Scene* scene : ALL_SCENES) delete scene;
 }
 
 // ————— DRIVER GAME LOOP ————— /
@@ -180,7 +184,7 @@ int main(int argc, char* argv[])
 {
     initialise();
 
-    while (g_gameIsRunning)
+    while (g_globalInfo.gameIsRunning)
     {
         process_input();
         update();

@@ -93,7 +93,7 @@ void Level2::initialise() {
 
     // setup basic attributes
     e_walker1->set_position(glm::vec3(3.0f, 1.0f, 0.0f));
-    e_walker2->set_position(glm::vec3(6.0f, 6.0f, 0.0f));
+    e_walker2->set_position(glm::vec3(6.0f, 4.0f, 0.0f));
     for (Entity* walker : { e_walker1, e_walker2 }) {
         walker->set_motion_type(Entity::SIDE_ON);
         walker->set_movement(glm::vec3(0.0f));
@@ -129,8 +129,8 @@ void Level2::initialise() {
         crawler->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
         crawler->setup_anim(2, 2, 2, 6);
     }
-    e_crawler1->m_animation_indices = e_crawler1->m_walking[Entity::RIGHT];
-    e_crawler2->m_animation_indices = e_crawler2->m_walking[Entity::LEFT];
+    e_crawler1->m_animation_indices = e_crawler1->m_walking[Entity::LEFT];
+    e_crawler2->m_animation_indices = e_crawler2->m_walking[Entity::RIGHT];
 
     // ————— FLYERS ————— //
     // create entities
@@ -212,30 +212,18 @@ void Level2::process_input()
 
 void Level2::update(float delta_time) {
     // update entities
-    e_player->update(delta_time, NULL, 0, m_state.map);
-    e_walker1->update(delta_time, NULL, 0, m_state.map);
-    e_walker2->update(delta_time, NULL, 0, m_state.map);
-    e_crawler1->update(delta_time, NULL, 0, m_state.map);
-    e_crawler2->update(delta_time, NULL, 0, m_state.map);
-    e_flyer1->update(delta_time, NULL, 0, m_state.map);
-    e_flyer2->update(delta_time, NULL, 0, m_state.map);
+    for (int i = 1; i < 8; i++) m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
 
     // move background
     Utility::move_background(e_player, e_background, m_state.map);
     e_background->update(delta_time, NULL, 0, m_state.map);
 
     // check for level transition
-    if (e_player->get_position().x > 29.0f) m_changeScenes = true;
+    if (e_player->get_position().x > 29.0f) m_globalInfo->changeScenes = true;
 }
 
 void Level2::render(ShaderProgram* program) {
     e_background->render(program);
     m_state.map->render(program);
-    e_player->render(program);
-    e_walker1->render(program);
-    e_walker2->render(program);
-    e_crawler1->render(program);
-    e_crawler2->render(program);
-    e_flyer1->render(program);
-    e_flyer2->render(program);
+    for (int i = 1; i < 7; i++) m_state.entities[i]->render(program);
 }

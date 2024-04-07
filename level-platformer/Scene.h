@@ -3,6 +3,12 @@
 #include "Entity.h"
 #include "Map.h"
 
+struct GlobalInfo {
+    bool gameIsRunning;
+    bool changeScenes;
+    int lives;
+};
+
 struct GameState {
     GameState(int cap) { entities = new Entity*[cap]; }
 
@@ -19,9 +25,8 @@ class Scene {
 public:
     // ————— ATTRIBUTES ————— //
     GameState m_state;
+    GlobalInfo* m_globalInfo;
     const int m_entityCap;
-    bool m_changeScenes = false;
-    bool m_gameIsRunning = true;
 
     // ————— VIRTUAL METHODS ————— //
     virtual void initialise() = 0;
@@ -49,4 +54,7 @@ public:
     // ————— GETTERS ————— //
     GameState const get_state() const { return m_state; }
     virtual Entity* get_player() const = 0;
+
+    // ————— GETTERS ————— //
+    void const set_globalInfo(GlobalInfo* new_globals) { m_globalInfo = new_globals; };
 };

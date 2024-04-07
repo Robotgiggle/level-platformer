@@ -145,7 +145,7 @@ void Menu::process_input()
 
 void Menu::update(float delta_time) {
     e_player->update(delta_time, NULL, 0, m_state.map);
-    if (e_player->get_position().x > 8.0f) m_changeScenes = true;
+    if (e_player->get_position().x > 8.0f) m_globalInfo->changeScenes = true;
 }
 
 void Menu::render(ShaderProgram* program) {
