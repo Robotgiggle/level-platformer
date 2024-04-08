@@ -79,7 +79,7 @@
       <AdditionalIncludeDirectories>C:\SDL\glew\include;C:\SDL\SDL2\include;C:\SDL\SDL2_image\include;C:\SDL\SDL2_mixer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\SDL\glew\lib\Release\Win32;C:\SDL\SDL2\lib\x86;C:\SDL\SDL2_image\lib\x86;C:\SDL\SDL2_mixer\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -133,8 +133,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CrawlerEntity.cpp" />
-    <ClCompile Include="FlyerEntity.cpp" />
+    <ClCompile Include="entities\CrawlerEntity.cpp" />
+    <ClCompile Include="entities\FlyerEntity.cpp" />
+    <ClCompile Include="entities\WalkerEntity.cpp" />
     <ClCompile Include="levels\EndScreen.cpp" />
     <ClCompile Include="levels\Level1.cpp" />
     <ClCompile Include="levels\Level2.cpp" />
@@ -143,14 +144,14 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Utility.cpp" />
-    <ClCompile Include="WalkerEntity.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CrawlerEntity.h" />
-    <ClInclude Include="FlyerEntity.h" />
+    <ClInclude Include="entities\CrawlerEntity.h" />
+    <ClInclude Include="entities\FlyerEntity.h" />
+    <ClInclude Include="entities\WalkerEntity.h" />
     <ClInclude Include="levels\EndScreen.h" />
     <ClInclude Include="levels\Level1.h" />
     <ClInclude Include="levels\Level2.h" />
@@ -159,7 +160,6 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Utility.h" />
-    <ClInclude Include="WalkerEntity.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="stb_image.h" />

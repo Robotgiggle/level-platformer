@@ -12,7 +12,7 @@
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../ShaderProgram.h"
 #include "../Utility.h"
-#include "../WalkerEntity.h"
+#include "../entities/WalkerEntity.h"
 #include "EndScreen.h"
 
 // terrain map

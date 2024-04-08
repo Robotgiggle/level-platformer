@@ -1,6 +1,5 @@
 #pragma once
 #include "../Scene.h"
-#include "../WalkerEntity.h"
 
 class Level3 : public Scene {
 public:

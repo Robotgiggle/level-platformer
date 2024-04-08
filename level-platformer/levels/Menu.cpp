@@ -12,7 +12,7 @@
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../ShaderProgram.h"
 #include "../Utility.h"
-#include "../CrawlerEntity.h"
+#include "../entities/CrawlerEntity.h"
 #include "Menu.h"
 
 // terrain map

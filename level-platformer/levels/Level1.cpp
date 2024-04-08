@@ -12,9 +12,9 @@
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../ShaderProgram.h"
 #include "../Utility.h"
-#include "../WalkerEntity.h"
-#include "../CrawlerEntity.h"
-#include "../FlyerEntity.h"
+#include "../entities/WalkerEntity.h"
+#include "../entities/CrawlerEntity.h"
+#include "../entities/FlyerEntity.h"
 #include "Level1.h"
 
 // terrain map
