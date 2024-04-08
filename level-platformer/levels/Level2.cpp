@@ -93,8 +93,8 @@ void Level2::initialise() {
     e_coinbar->m_texture_id = Utility::load_texture(COINBAR_FILEPATH);
 
     // setup sprite variants
-    e_coinbar->m_animation_indices = new int[4] { 0, 1, 2, 3 };
-    e_coinbar->setup_anim(1, 4, 4, 0, 2);
+    e_coinbar->m_animation_indices = new int[8] { 0, 2, 4, 6, 1, 3, 5, 7 };
+    e_coinbar->setup_anim(2, 4, 4, 0, 2);
 
     // ————— BONUS COIN ————— //
     // create entity
@@ -295,7 +295,7 @@ void Level2::update(float delta_time) {
     // check for coin collision
     if (e_player->check_collision(e_coin) and !m_globalInfo->playerDead) {
         Mix_PlayChannel(-1, m_state.coinSfx, 0);
-        m_globalInfo->coins[1] = true;
+        m_globalInfo->coins |= 2;
         e_coin->set_active(false);
         m_timer = 2.5f;
     }
@@ -311,8 +311,7 @@ void Level2::update(float delta_time) {
 
     // update and move coinbar
     e_coinbar->set_position(e_background->get_position() + glm::vec3(3.75f, 3.25f, 0.0f));
-    int coins = m_globalInfo->coins[0] + m_globalInfo->coins[1] + m_globalInfo->coins[2];
-    e_coinbar->m_animation_index = coins;
+    e_coinbar->m_animation_index = m_globalInfo->coins;
     e_coinbar->update(delta_time, NULL, 0, m_state.map);
 
     // check for level transition

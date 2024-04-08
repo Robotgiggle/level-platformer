@@ -7,9 +7,9 @@ struct GlobalInfo {
     bool gameIsRunning = true;
     bool changeScenes = false;
     bool playerDead = false;
-    bool coins[3] = { false };
     float deathTimer;
-    int lives;
+    int lives = 3;
+    int coins = 0;
 };
 
 struct GameState {
