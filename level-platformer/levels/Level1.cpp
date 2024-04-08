@@ -25,7 +25,7 @@ const int LV1_DATA[] = {
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2,  3,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2,  3,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  8, 10,  0,  0,  0,  0,  0,
-    0,  0,  0,  0,  0,  2,  3,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  8, 12, 16,  0,  0,  0,  0,  0,
+    0,  0,  0,  0,  0,  2,  3,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  8, 12, 16,  0,  0,  0,  0, 18,
     9,  9, 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  8,  9,  9,  9,  9,  9,  9, 12, 15, 16,  0,  0,  0,  8,  9,
    15, 15, 16,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 14, 15, 15, 15, 15, 15, 15, 15, 15, 16,  0,  0,  0, 14, 15,
 };
@@ -265,7 +265,8 @@ void Level1::update(float delta_time) {
     e_healthbar->update(delta_time, NULL, 0, m_state.map);
 
     // check for level transition
-    if (e_player->get_position().x > 29.0f) m_globalInfo->changeScenes = true;
+    glm::vec3 pos = e_player->get_position();
+    if (pos.x > 29.0f and pos.y < 3.5f) m_globalInfo->changeScenes = true;
 }
 
 void Level1::render(ShaderProgram* program) {

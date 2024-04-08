@@ -141,12 +141,14 @@ void Menu::process_input()
 }
 
 void Menu::update(float delta_time) {
+    // player jump animation
     if (e_player->m_collided_bottom && timer <= 0) {
         e_player->m_is_jumping = true;
         timer = 1.0f;
     }
     timer -= delta_time;
 
+    // update entities
     e_player->update(delta_time, NULL, 0, m_state.map);
     e_crawler1->update(delta_time, NULL, 0, m_state.map);
     e_crawler2->update(delta_time, NULL, 0, m_state.map);

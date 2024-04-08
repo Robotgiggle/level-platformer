@@ -196,5 +196,5 @@ void EndScreen::render(ShaderProgram* program) {
         e_walker2->render(program);
         Utility::draw_text(program, font_texture_id, "Game Over", 1.0f, 0.0f, glm::vec3(0.5f, 5.2f, 0.0f));
     }
-    Utility::draw_text(program, font_texture_id, "Press ENTER to quit", 0.5f, 0.0f, glm::vec3(0.125f, 3.3f, 0.0f));
+    Utility::draw_text(program, font_texture_id, "Press ENTER to quit", 0.5f, 0.0f, glm::vec3(0.0f, 3.3f, 0.0f));
 }

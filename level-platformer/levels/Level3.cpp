@@ -23,7 +23,7 @@ const int LV3_WIDTH = 30,
 const int LV3_DATA[] = {
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 18,
     0,  0,  0,  0,  0,  8, 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2,  3,  3,  4,  0,  0,  0,  8,  9,
     0,  0,  0,  0,  8, 12, 16,  0,  0,  0,  0,  0,  0,  0,  0,  2,  3,  3,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0, 14, 17,
     9,  9,  9,  9, 12, 17, 16,  0,  0,  2,  3,  3,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 14, 17,
@@ -86,7 +86,7 @@ void Level3::initialise() {
 
     // setup basic attributes
     e_player->set_motion_type(Entity::SIDE_ON);
-    e_player->set_position(glm::vec3(1.0f, 2.0f, 0.0f));
+    e_player->set_position(glm::vec3(0.5f, 2.0f, 0.0f));
     e_player->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY, 0.0f));
     e_player->set_speed(1.8f);
     e_player->set_rot_speed(1.0f);
@@ -234,7 +234,7 @@ void Level3::process_input()
 
 void Level3::update(float delta_time) {
     // update entities
-    for (int i = 1; i < 11; i++) m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
+    for (int i = 1; i < 10; i++) m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
 
     // check for death fall
     if (e_player->get_position().y <= 0 && !m_globalInfo->playerDead) {
@@ -274,7 +274,8 @@ void Level3::update(float delta_time) {
     e_healthbar->update(delta_time, NULL, 0, m_state.map);
 
     // check for level transition
-    if (e_player->get_position().x > 29.0f) m_globalInfo->changeScenes = true;
+    glm::vec3 pos = e_player->get_position();
+    if (pos.x > 29.0f and pos.y < 6.0f) m_globalInfo->changeScenes = true;
 }
 
 void Level3::render(ShaderProgram* program) {
