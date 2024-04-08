@@ -38,10 +38,9 @@ void WalkerEntity::update(float delta_time, Entity* collidable_entities, int col
 		break;
 	}
 
-	// check for platform edge or solid wall
+	// check for platform edge, solid wall, or map border
 	bool edge = true;
 	glm::vec3 edgeCheckPos = m_edge_check_offset + get_position();
-	if (map->is_solid(edgeCheckPos)) edge = false;
 	for (int i = 0; i < collidable_entity_count; i++) {
 		Entity* other = &collidable_entities[i];
 		if (!other->get_active()) continue;
@@ -52,8 +51,12 @@ void WalkerEntity::update(float delta_time, Entity* collidable_entities, int col
 
 		if (x_distance < 0.0f && y_distance < 0.0f) edge = false;
 	}
-	glm::vec3 wall_check_pos = m_wall_check_offset + get_position();
-	if (map->is_solid(wall_check_pos)) edge = true;
+
+	glm::vec3 wallCheckPos = m_wall_check_offset + get_position();
+	if (map->is_solid(edgeCheckPos)) edge = false;
+	if (map->is_solid(wallCheckPos)) edge = true;
+
+	if (wallCheckPos.x <= map->get_left_bound() or wallCheckPos.x >= map->get_right_bound()) edge = true;
 
 	// if at the edge, turn around
 	if (edge) {

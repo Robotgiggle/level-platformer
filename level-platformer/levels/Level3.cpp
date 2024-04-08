@@ -39,6 +39,7 @@ const char SPRITESHEET_FILEPATH[] = "assets/player.png",
            CRAWLER_FILEPATH[] = "assets/crawler.png",
            FLYER_FILEPATH[] = "assets/flyer.png",
            COIN_FILEPATH[] = "assets/coin.png",
+           PAUSE_FILEPATH[] = "assets/pause_screen.png",
            MAP_TILES_FILEPATH[] = "assets/map_tiles.png";
 
 // audio filepaths
@@ -69,6 +70,17 @@ void Level3::initialise() {
     e_background->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
     e_background->set_sprite_scale(glm::vec3(10.0f, 7.5f, 0.0f));
     e_background->m_texture_id = Utility::load_texture(BACKGROUND_FILEPATH);
+
+    // ————— PAUSE SCREEN ————— //
+    // create entity
+    e_pauseScreen = new Entity(this);
+
+    // setup basic attributes
+    e_pauseScreen->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
+    e_pauseScreen->set_sprite_scale(glm::vec3(10.0f, 7.5f, 0.0f));
+    e_pauseScreen->m_texture_id = Utility::load_texture(PAUSE_FILEPATH);
+
+    e_pauseScreen->update(0.0f, NULL, 0, m_state.map);
 
     // ————— HEALTHBAR ————— //
     // create entity
@@ -217,6 +229,12 @@ void Level3::process_event(SDL_Event event) {
     case SDL_KEYDOWN:
         // process keydown triggers specifically
         switch (event.key.keysym.sym) {
+        case SDLK_ESCAPE:
+            m_globalInfo->gamePaused = true;
+            break;
+        case SDLK_RETURN:
+            m_globalInfo->gamePaused = false;
+            break;
         case SDLK_SPACE:
             if (e_player->m_collided_bottom) {
                 e_player->m_is_jumping = true;
@@ -331,4 +349,5 @@ void Level3::render(ShaderProgram* program) {
     m_state.map->render(program);
     for (int i = 1; i < 12; i++) m_state.entities[i]->render(program);
     if (m_timer > 0.0f) e_coinbar->render(program);
+    if (m_globalInfo->gamePaused) e_pauseScreen->render(program);
 }

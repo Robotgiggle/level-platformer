@@ -149,10 +149,18 @@ void update()
     if (g_timeAccumulator < FIXED_TIMESTEP) return;
     while (g_timeAccumulator >= FIXED_TIMESTEP)
     {
-        g_currentScene->update(FIXED_TIMESTEP);
+        // update scene, unless the game is paused
+        if (!g_globalInfo.gamePaused) g_currentScene->update(FIXED_TIMESTEP);
+        
+        // if the player dies, move to the ending scene unless you're already there
         if (g_globalInfo.lives <= 0 && g_globalInfo.deathTimer <= 0 && g_currentScene != ALL_SCENES[4]) startup_scene(4);
+        
+        // if changeScene is set and the player isn't in the death animation, move to the next scene
         if (g_globalInfo.changeScenes && g_globalInfo.deathTimer <= 0) startup_scene(g_currentScene->m_state.nextSceneID);
+        
+        // if the player isn't alive, tick down the death timer
         if (g_globalInfo.playerDead) g_globalInfo.deathTimer -= FIXED_TIMESTEP;
+
         g_timeAccumulator -= FIXED_TIMESTEP;
     }
 

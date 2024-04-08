@@ -18,6 +18,7 @@ public:
     Entity*& e_coin = m_state.entities[10];
     Entity*& e_healthbar = m_state.entities[11];
     Entity*& e_coinbar = m_state.entities[12];
+    Entity*& e_pauseScreen = m_state.entities[13];
 
     // ————— METHODS ————— //
     Level3(int cap);

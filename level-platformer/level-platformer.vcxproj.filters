@@ -136,6 +136,9 @@
     <Image Include="assets\coinbar.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\pause_screen.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\default_jump.wav">

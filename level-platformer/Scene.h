@@ -6,6 +6,7 @@
 struct GlobalInfo {
     bool gameIsRunning = true;
     bool changeScenes = false;
+    bool gamePaused = false;
     bool playerDead = false;
     float deathTimer;
     int lives = 3;
