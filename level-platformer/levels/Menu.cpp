@@ -42,9 +42,6 @@ const char MUSIC_FILEPATH[] = "assets/default_music.mp3",
 // useful constants
 const float ACC_OF_GRAVITY = -4.91f;
 
-// jump timer
-float timer = 0.0f;
-
 // constructor definition
 Menu::Menu(int cap) : Scene(cap) {}
 
@@ -142,11 +139,11 @@ void Menu::process_input()
 
 void Menu::update(float delta_time) {
     // player jump animation
-    if (e_player->m_collided_bottom && timer <= 0) {
+    if (e_player->m_collided_bottom && m_timer <= 0) {
         e_player->m_is_jumping = true;
-        timer = 1.0f;
+        m_timer = 1.0f;
     }
-    timer -= delta_time;
+    m_timer -= delta_time;
 
     // update entities
     e_player->update(delta_time, NULL, 0, m_state.map);

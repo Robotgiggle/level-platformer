@@ -127,6 +127,6 @@ void Utility::player_death(Entity* player, GlobalInfo* globalInfo) {
         globalInfo->deathTimer = 2.5f;
         player->set_collision(false);
         player->set_velocity(glm::vec3(0.0f, 6.5f, 0.0f));
-        player->set_acceleration(glm::vec3(0.0f, -8.5f, 0.0f));
+        player->set_acceleration(glm::vec3(0.0f, -9.5f, 0.0f));
     }
 }

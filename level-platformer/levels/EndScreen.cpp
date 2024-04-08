@@ -71,7 +71,7 @@ void EndScreen::initialise() {
 
     // setup basic attributes
     e_player->set_motion_type(Entity::SIDE_ON);
-    e_player->set_position(glm::vec3(1.0f, 1.0f, 0.0f));
+    e_player->set_position(glm::vec3(0.5f, 1.0f, 0.0f));
     e_player->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY, 0.0f));
     e_player->set_speed(1.8f);
     e_player->set_rot_speed(1.0f);

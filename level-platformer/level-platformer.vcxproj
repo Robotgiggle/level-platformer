@@ -166,6 +166,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\background.png" />
+    <Image Include="assets\coin.png" />
+    <Image Include="assets\coinbar.png" />
     <Image Include="assets\crawler.png" />
     <Image Include="assets\default_font.png" />
     <Image Include="assets\flyer.png" />
@@ -176,6 +178,7 @@
     <Image Include="assets\walker.png" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="assets\coin_pickup.wav" />
     <Media Include="assets\default_jump.wav" />
     <Media Include="assets\default_music.mp3" />
   </ItemGroup>

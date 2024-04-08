@@ -15,7 +15,9 @@ public:
     Entity*& e_flyer1 = m_state.entities[7];
     Entity*& e_flyer2 = m_state.entities[8];
     Entity*& e_flyer3 = m_state.entities[9];
-    Entity*& e_healthbar = m_state.entities[10];
+    Entity*& e_coin = m_state.entities[10];
+    Entity*& e_healthbar = m_state.entities[11];
+    Entity*& e_coinbar = m_state.entities[12];
 
     // ————— METHODS ————— //
     Level3(int cap);

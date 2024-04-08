@@ -7,6 +7,7 @@ struct GlobalInfo {
     bool gameIsRunning = true;
     bool changeScenes = false;
     bool playerDead = false;
+    bool coins[3] = { false };
     float deathTimer;
     int lives;
 };
@@ -19,6 +20,7 @@ struct GameState {
 
     Mix_Music* bgm;
     Mix_Chunk* jumpSfx;
+    Mix_Chunk* coinSfx;
 
     int nextSceneID;
 };
@@ -29,6 +31,7 @@ public:
     GameState m_state;
     GlobalInfo* m_globalInfo;
     const int m_entityCap;
+    float m_timer = 0.0f;
 
     // ————— VIRTUAL METHODS ————— //
     virtual void initialise() = 0;

@@ -34,14 +34,17 @@ const int LV1_DATA[] = {
 const char SPRITESHEET_FILEPATH[] = "assets/player.png",
            BACKGROUND_FILEPATH[] = "assets/background.png",
            HEALTHBAR_FILEPATH[] = "assets/healthbar.png",
+           COINBAR_FILEPATH[] = "assets/coinbar.png",
            WALKER_FILEPATH[] = "assets/walker.png",
            CRAWLER_FILEPATH[] = "assets/crawler.png",
            FLYER_FILEPATH[] = "assets/flyer.png",
+           COIN_FILEPATH[] = "assets/coin.png",
            MAP_TILES_FILEPATH[] = "assets/map_tiles.png";
 
 // audio filepaths
 const char MUSIC_FILEPATH[] = "assets/default_music.mp3",
-           JUMP_FILEPATH[] = "assets/default_jump.wav";
+           JUMP_FILEPATH[] = "assets/default_jump.wav",
+           PICKUP_FILEPATH[] = "assets/coin_pickup.wav";
 
 // useful constants
 const float ACC_OF_GRAVITY = -6.0f;
@@ -79,6 +82,33 @@ void Level1::initialise() {
     // setup sprite variants
     e_healthbar->m_animation_indices = new int[4] { 0, 1, 2, 3 };
     e_healthbar->setup_anim(1, 4, 4, 0, 2);
+
+    // ————— COINBAR ————— //
+    // create entity
+    e_coinbar = new Entity(this);
+
+    // setup basic attributes
+    e_coinbar->set_position(glm::vec3(8.0f, 6.75f, 0.0f));
+    e_coinbar->set_sprite_scale(glm::vec3(2.1f, 0.6f, 0.0f));
+    e_coinbar->m_texture_id = Utility::load_texture(COINBAR_FILEPATH);
+
+    // setup sprite variants
+    e_coinbar->m_animation_indices = new int[4] { 0, 1, 2, 3 };
+    e_coinbar->setup_anim(1, 4, 4, 0, 2);
+
+    // ————— BONUS COIN ————— //
+    // create entity
+    e_coin = new Entity(this);
+
+    // setup basic attributes
+    e_coin->set_position(glm::vec3(17.0f, 5.0f, 0.0f));
+    e_coin->set_scale(glm::vec3(0.6f, 0.6f, 0.0f));
+    e_coin->set_sprite_scale(glm::vec3(0.6f, 0.6f, 0.0f));
+    e_coin->m_texture_id = Utility::load_texture(COIN_FILEPATH);
+
+    // setup spin animation
+    e_coin->m_animation_indices = new int[4] { 0, 1 };
+    e_coin->setup_anim(2, 1, 2, 4, 1);
 
     // ————— PLAYER ————— //
     // create entity
@@ -167,6 +197,8 @@ void Level1::initialise() {
     m_state.bgm = Mix_LoadMUS(MUSIC_FILEPATH);
     
     m_state.jumpSfx = Mix_LoadWAV(JUMP_FILEPATH);
+    m_state.coinSfx = Mix_LoadWAV(PICKUP_FILEPATH);
+    Mix_VolumeChunk(m_state.jumpSfx, MIX_MAX_VOLUME / 2);
     Mix_VolumeChunk(m_state.jumpSfx, MIX_MAX_VOLUME / 2);
 }
 
@@ -225,7 +257,7 @@ void Level1::process_input()
 
 void Level1::update(float delta_time) {
     // update entities
-    for (int i = 1; i < 7; i++) m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
+    for (int i = 1; i < 8; i++) m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
 
     // check for death fall
     if (e_player->get_position().y <= 0 && !m_globalInfo->playerDead) {
@@ -255,6 +287,14 @@ void Level1::update(float delta_time) {
         }
     }
 
+    // check for coin collision
+    if (e_player->check_collision(e_coin) and !m_globalInfo->playerDead) {
+        Mix_PlayChannel(-1, m_state.coinSfx, 0);
+        m_globalInfo->coins[0] = true;
+        e_coin->set_active(false);
+        m_timer = 2.5f;
+    }
+
     // move background
     Utility::move_background(e_player, e_background, m_state.map);
     e_background->update(delta_time, NULL, 0, m_state.map);
@@ -264,13 +304,23 @@ void Level1::update(float delta_time) {
     e_healthbar->m_animation_index = m_globalInfo->lives;
     e_healthbar->update(delta_time, NULL, 0, m_state.map);
 
+    // update and move coinbar
+    e_coinbar->set_position(e_background->get_position() + glm::vec3(3.75f, 3.25f, 0.0f));
+    int coins = m_globalInfo->coins[0] + m_globalInfo->coins[1] + m_globalInfo->coins[2];
+    e_coinbar->m_animation_index = coins;
+    e_coinbar->update(delta_time, NULL, 0, m_state.map);
+
     // check for level transition
     glm::vec3 pos = e_player->get_position();
     if (pos.x > 29.0f and pos.y < 3.5f) m_globalInfo->changeScenes = true;
+
+    // tick timer
+    if (m_timer > 0.0f) m_timer -= delta_time;
 }
 
 void Level1::render(ShaderProgram* program) {
     e_background->render(program);
     m_state.map->render(program);
-    for (int i = 1; i < 8; i++) m_state.entities[i]->render(program);
+    for (int i = 1; i < 9; i++) m_state.entities[i]->render(program);
+    if (m_timer > 0.0f) e_coinbar->render(program);
 }
