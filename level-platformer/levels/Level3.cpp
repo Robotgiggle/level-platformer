@@ -33,16 +33,18 @@ const int LV3_DATA[] = {
 // sprite filepaths
 const char SPRITESHEET_FILEPATH[] = "assets/player.png",
            BACKGROUND_FILEPATH[] = "assets/background.png",
+           HEALTHBAR_FILEPATH[] = "assets/healthbar.png",
            WALKER_FILEPATH[] = "assets/walker.png",
            CRAWLER_FILEPATH[] = "assets/crawler.png",
            FLYER_FILEPATH[] = "assets/flyer.png",
            MAP_TILES_FILEPATH[] = "assets/map_tiles.png";
 
 // audio filepaths
-const char MUSIC_FILEPATH[] = "assets/default_music.mp3";
+const char MUSIC_FILEPATH[] = "assets/default_music.mp3",
+           JUMP_FILEPATH[] = "assets/default_jump.wav";
 
 // useful constants
-const float ACC_OF_GRAVITY = -4.91f;
+const float ACC_OF_GRAVITY = -6.0f;
 
 // constructor definition
 Level3::Level3(int cap) : Scene(cap) {}
@@ -65,6 +67,19 @@ void Level3::initialise() {
     e_background->set_sprite_scale(glm::vec3(10.0f, 7.5f, 0.0f));
     e_background->m_texture_id = Utility::load_texture(BACKGROUND_FILEPATH);
 
+    // ————— HEALTHBAR ————— //
+    // create entity
+    e_healthbar = new Entity(this);
+
+    // setup basic attributes
+    e_healthbar->set_position(glm::vec3(1.0f, 6.5f, 0.0f));
+    e_healthbar->set_sprite_scale(glm::vec3(2.5f, 0.6f, 0.0f));
+    e_healthbar->m_texture_id = Utility::load_texture(HEALTHBAR_FILEPATH);
+
+    // setup sprite variants
+    e_healthbar->m_animation_indices = new int[4] { 0, 1, 2, 3 };
+    e_healthbar->setup_anim(1, 4, 4);
+
     // ————— PLAYER ————— //
     // create entity
     e_player = new Entity(this);
@@ -78,7 +93,7 @@ void Level3::initialise() {
     e_player->set_scale(glm::vec3(0.715f, 0.88f, 0.0f));
     e_player->set_sprite_scale(glm::vec3(0.715f, 0.88f, 0.0f));
     e_player->m_texture_id = Utility::load_texture(SPRITESHEET_FILEPATH);
-    e_player->m_jumping_power = 4.5f;
+    e_player->m_jumping_power = 5.4f;
 
     // setup walking animation
     e_player->m_walking[Entity::LEFT] = new int[4] { 0, 2 };
@@ -141,11 +156,11 @@ void Level3::initialise() {
     e_flyer3 = new FlyerEntity(this, 0.5f, 0.75f, 4.0f);
 
     // setup basic attributes
-    e_flyer1->set_position(glm::vec3(7.0f, 6.0f, 0.0f));
+    e_flyer1->set_position(glm::vec3(7.0f, 5.0f, 0.0f));
     e_flyer2->set_position(glm::vec3(20.0f, 5.0f, 0.0f));
-    e_flyer3->set_position(glm::vec3(26.0f, 6.0f, 0.0f));
+    e_flyer3->set_position(glm::vec3(26.5f, 5.0f, 0.0f));
     for (Entity* flyer : { e_flyer1, e_flyer2, e_flyer3 }) {
-        flyer->set_speed(5.5f);
+        flyer->set_speed(4.8f);
         flyer->set_scale(glm::vec3(0.55f, 0.55f, 0.0f));
         flyer->set_sprite_scale(glm::vec3(0.84f, 0.63f, 0.0f));
         flyer->m_texture_id = Utility::load_texture(FLYER_FILEPATH);
@@ -160,7 +175,7 @@ void Level3::initialise() {
     // ————— AUDIO ————— //
     m_state.bgm = Mix_LoadMUS(MUSIC_FILEPATH);
 
-    m_state.jumpSfx = Mix_LoadWAV("assets/default_jump.wav");
+    m_state.jumpSfx = Mix_LoadWAV(JUMP_FILEPATH);
     Mix_VolumeChunk(m_state.jumpSfx, MIX_MAX_VOLUME / 2);
 }
 
@@ -187,6 +202,9 @@ void Level3::process_input()
     // reset forced-movement if no player input
     e_player->set_movement(glm::vec3(0.0f));
     e_player->set_rotation(0.0f);
+
+    // no movement if you're dead
+    if (m_globalInfo->playerDead) return;
 
     // event triggers are *NOT* handled in this function, unlike before
     // see process_event() for event handling
@@ -216,11 +234,44 @@ void Level3::process_input()
 
 void Level3::update(float delta_time) {
     // update entities
-    for (int i = 1; i < 10; i++) m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
+    for (int i = 1; i < 11; i++) m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
+
+    // check for death fall
+    if (e_player->get_position().y <= 0 && !m_globalInfo->playerDead) {
+        Utility::player_death(e_player, m_globalInfo);
+        m_state.nextSceneID = 3;
+    }
+
+    // check for enemy collision
+    for (int i = 2; i < 10; i++) {
+        Entity* enemy = m_state.entities[i];
+        if (e_player->check_collision(enemy) and !m_globalInfo->playerDead) {
+            if ((e_player->get_velocity().y < 0 or enemy->get_velocity().y > 0)
+                and e_player->get_position().y > 0.3f + enemy->get_position().y) {
+                if ((i == 5 or i == 6) and (!enemy->get_angle())) {
+                    // stomping a crawler kills you if the spike is pointing up
+                    Utility::player_death(e_player, m_globalInfo);
+                    m_state.nextSceneID = 3;
+                    continue;
+                }
+                enemy->set_active(false);
+                e_player->set_velocity(glm::vec3(0.0f, 4.0f, 0.0f));
+            }
+            else {
+                Utility::player_death(e_player, m_globalInfo);
+                m_state.nextSceneID = 3;
+            }
+        }
+    }
 
     // move background
     Utility::move_background(e_player, e_background, m_state.map);
     e_background->update(delta_time, NULL, 0, m_state.map);
+
+    // update and move healthbar
+    e_healthbar->set_position(e_background->get_position() + glm::vec3(-3.5f, 3.25f, 0.0f));
+    e_healthbar->m_animation_index = m_globalInfo->lives;
+    e_healthbar->update(delta_time, NULL, 0, m_state.map);
 
     // check for level transition
     if (e_player->get_position().x > 29.0f) m_globalInfo->changeScenes = true;
@@ -229,5 +280,5 @@ void Level3::update(float delta_time) {
 void Level3::render(ShaderProgram* program) {
     e_background->render(program);
     m_state.map->render(program);
-    for (int i = 1; i < 10; i++) m_state.entities[i]->render(program);
+    for (int i = 1; i < 11; i++) m_state.entities[i]->render(program);
 }

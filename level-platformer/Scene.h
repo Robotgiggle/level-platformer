@@ -4,8 +4,10 @@
 #include "Map.h"
 
 struct GlobalInfo {
-    bool gameIsRunning;
-    bool changeScenes;
+    bool gameIsRunning = true;
+    bool changeScenes = false;
+    bool playerDead = false;
+    float deathTimer;
     int lives;
 };
 

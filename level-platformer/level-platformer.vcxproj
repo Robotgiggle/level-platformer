@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClCompile Include="CrawlerEntity.cpp" />
     <ClCompile Include="FlyerEntity.cpp" />
+    <ClCompile Include="levels\EndScreen.cpp" />
     <ClCompile Include="levels\Level1.cpp" />
     <ClCompile Include="levels\Level2.cpp" />
     <ClCompile Include="levels\Level3.cpp" />
@@ -150,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="CrawlerEntity.h" />
     <ClInclude Include="FlyerEntity.h" />
+    <ClInclude Include="levels\EndScreen.h" />
     <ClInclude Include="levels\Level1.h" />
     <ClInclude Include="levels\Level2.h" />
     <ClInclude Include="levels\Level3.h" />
@@ -167,6 +169,7 @@
     <Image Include="assets\crawler.png" />
     <Image Include="assets\default_font.png" />
     <Image Include="assets\flyer.png" />
+    <Image Include="assets\healthbar.png" />
     <Image Include="assets\map_tiles.png" />
     <Image Include="assets\player.png" />
     <Image Include="assets\walker.png" />

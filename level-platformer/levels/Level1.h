@@ -11,6 +11,7 @@ public:
     Entity*& e_crawler2 = m_state.entities[4];
     Entity*& e_flyer1 = m_state.entities[5];
     Entity*& e_flyer2 = m_state.entities[6];
+    Entity*& e_healthbar = m_state.entities[7];
     
 
     // ————— METHODS ————— //

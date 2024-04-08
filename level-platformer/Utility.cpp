@@ -19,6 +19,7 @@
 #include "ShaderProgram.h"
 #include <SDL_image.h>
 #include "stb_image.h"
+#include "Scene.h"
 #include "Entity.h"
 #include "Map.h"
 #include "Utility.h"
@@ -115,4 +116,17 @@ void Utility::move_background(Entity* player, Entity* background, Map* map) {
     if (xPos <= 4.5f) background->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
     else if (xPos >= rBound - 5.0f) background->set_position(glm::vec3(rBound - 5.0f, 3.25f, 0.0f));
     else background->set_position(glm::vec3(xPos, 3.25f, 0.0f));
+}
+
+void Utility::player_death(Entity* player, GlobalInfo* globalInfo) {
+    globalInfo->lives -= 1;
+    globalInfo->playerDead = true;
+    globalInfo->deathTimer = 0.5f;
+    globalInfo->changeScenes = true;
+    if (player->get_position().y > 0.0f) {
+        globalInfo->deathTimer = 2.5f;
+        player->set_collision(false);
+        player->set_velocity(glm::vec3(0.0f, 6.5f, 0.0f));
+        player->set_acceleration(glm::vec3(0.0f, -8.5f, 0.0f));
+    }
 }

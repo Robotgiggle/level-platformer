@@ -54,6 +54,9 @@
     <ClCompile Include="FlyerEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="levels\EndScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderProgram.h">
@@ -95,6 +98,9 @@
     <ClInclude Include="FlyerEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="levels\EndScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\default_font.png">
@@ -116,6 +122,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\background.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\healthbar.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

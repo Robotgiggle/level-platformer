@@ -17,6 +17,7 @@
 #include "levels/Level1.h"
 #include "levels/Level2.h"
 #include "levels/Level3.h"
+#include "levels/EndScreen.h"
 
 // ————— CONSTANTS ————— //
 
@@ -45,12 +46,12 @@ const float MILLISECONDS_IN_SECOND = 1000.0;
 const float FIXED_TIMESTEP = 0.0166666f;
 
 // scenes
-const int NUM_OF_SCENES = 4;
 Scene* const ALL_SCENES[] = {
     new Menu(10),
     new Level1(20),
     new Level2(20),
-    new Level3(20)
+    new Level3(20),
+    new EndScreen(10)
 };
 
 // ————— VARIABLES ————— //
@@ -71,6 +72,7 @@ float g_timeAccumulator = 0.0f;
 // ———— GENERAL FUNCTIONS ———— //
 void startup_scene(int index) {
     g_globalInfo.changeScenes = false;
+    g_globalInfo.playerDead = false;
     g_currentScene = ALL_SCENES[index];
     g_currentScene->initialise();
 }
@@ -107,8 +109,8 @@ void initialise()
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
 
     for (Scene* scene : ALL_SCENES) scene->set_globalInfo(&g_globalInfo);
-    g_globalInfo.gameIsRunning = true;
-    startup_scene(0);
+    g_globalInfo.lives = 3;
+    startup_scene(2);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -148,19 +150,25 @@ void update()
     while (g_timeAccumulator >= FIXED_TIMESTEP)
     {
         g_currentScene->update(FIXED_TIMESTEP);
-        if (g_globalInfo.changeScenes) startup_scene(g_currentScene->m_state.nextSceneID);
+        if (g_globalInfo.lives <= 0 && g_globalInfo.deathTimer <= 0 && g_currentScene != ALL_SCENES[4]) startup_scene(4);
+        if (g_globalInfo.changeScenes && g_globalInfo.deathTimer <= 0) startup_scene(g_currentScene->m_state.nextSceneID);
+        if (g_globalInfo.playerDead) g_globalInfo.deathTimer -= FIXED_TIMESTEP;
         g_timeAccumulator -= FIXED_TIMESTEP;
     }
 
     // ————— CAMERA TRACKING ————— //
-    float xPos = g_currentScene->get_player()->get_position().x;
-    float rBound = g_currentScene->m_state.map->get_right_bound();
-    if (xPos <= 4.5f) {
-        g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-4.5, -3.25f, 0.0f));
-    } else if (xPos >= rBound - 5.0f) {
-        g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(5.0f - rBound, -3.25f, 0.0f));
-    } else {
-        g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xPos, -3.25f, 0.0f));
+    if (g_currentScene->get_player()) {
+        float xPos = g_currentScene->get_player()->get_position().x;
+        float rBound = g_currentScene->m_state.map->get_right_bound();
+        if (xPos <= 4.5f) {
+            g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-4.5, -3.25f, 0.0f));
+        }
+        else if (xPos >= rBound - 5.0f) {
+            g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(5.0f - rBound, -3.25f, 0.0f));
+        }
+        else {
+            g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xPos, -3.25f, 0.0f));
+        }
     }
 }
 
