@@ -7,6 +7,7 @@ class Scene;
 class Entity {
 public:
     enum MotionType { NONE, TOP_DOWN, SIDE_ON, SIDE_ON_Y, PHYSICS };
+    enum AnimType { MOVING, ALWAYS, CUSTOM, NEVER };
     enum { LEFT, RIGHT, UP, DOWN };
 
 private:
@@ -42,7 +43,7 @@ public:
         m_animation_rows = 0,
         m_frames_per_second = 4;
     float m_animation_time = 0.0f;
-    bool m_always_animate = false;
+    AnimType m_animation_type = MOVING;
 
     // ––––– PHYSICS (JUMPING) ––––– //
     bool  m_is_jumping = false;
@@ -62,7 +63,7 @@ public:
     void despawn();
 
     void setup_anim(int cols = 0, int rows = 0, int frames = 0, int fps = 4,
-                    bool always = false, int index = 0, float time = 0.0f);
+                    int type = 0, int index = 0, float time = 0.0f);
     void draw_sprite_from_texture_atlas(ShaderProgram* program, GLuint texture_id, int index);
     bool const check_collision(Entity* other) const;
     void const check_solid_collision(Entity* solid_entities, int solid_entity_count);

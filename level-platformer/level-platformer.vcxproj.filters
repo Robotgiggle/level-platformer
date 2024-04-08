@@ -127,6 +127,9 @@
     <Image Include="assets\healthbar.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\pixel_font.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\default_jump.wav">

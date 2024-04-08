@@ -4,8 +4,10 @@
 class Menu : public Scene {
 public:
     // ————— CUSTOM ENTITIES ————— //
-    Entity*& e_player = m_state.entities[0];
-    Entity*& e_background = m_state.entities[1];
+    Entity*& e_background = m_state.entities[0];
+    Entity*& e_player = m_state.entities[1];
+    Entity*& e_crawler1 = m_state.entities[2];
+    Entity*& e_crawler2 = m_state.entities[3];
 
     // ————— METHODS ————— //
     Menu(int cap);

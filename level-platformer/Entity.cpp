@@ -46,7 +46,7 @@ void Entity::despawn() {
     delete this;
 }
 
-void Entity::setup_anim(int cols, int rows, int frames, int fps, bool always, int index, float time) {
+void Entity::setup_anim(int cols, int rows, int frames, int fps, int type, int index, float time) {
     m_animation_cols = cols;
     m_animation_rows = rows;
 
@@ -55,7 +55,7 @@ void Entity::setup_anim(int cols, int rows, int frames, int fps, bool always, in
     m_animation_time = time;
     m_frames_per_second = fps;
 
-    m_always_animate = always;
+    m_animation_type = static_cast<AnimType>(type);
 }
 
 void Entity::draw_sprite_from_texture_atlas(ShaderProgram* program, GLuint texture_id, int index)
@@ -127,15 +127,23 @@ void Entity::update(float delta_time, Entity* solid_entities, int solid_entity_c
     // ––––– ANIMATION ––––– //
     if (m_animation_indices != NULL)
     {
-        if (glm::length(m_movement) != 0 or m_always_animate) {
+        switch (m_animation_type) {
+        case MOVING:
+            if (glm::length(m_movement) == 0) {
+                m_animation_index = 0;
+                break;  // if movement isn't 0, fall through to ALWAYS
+            }
+        case ALWAYS:
             m_animation_time += delta_time;
-            float seconds_per_frame = (float)1 / m_frames_per_second;
-
-            if (m_animation_time >= seconds_per_frame)
-            {
+            if (m_animation_time >= 1.0f / m_frames_per_second){
                 m_animation_time = 0.0f;
                 m_animation_index = (m_animation_index + 1) % m_animation_frames;
             }
+            break;
+        case NEVER:
+            m_animation_index = 0;
+        default:
+            break;
         }
     }
 

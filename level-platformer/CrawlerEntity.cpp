@@ -11,7 +11,6 @@
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
-#include "Entity.h"
 #include "CrawlerEntity.h"
 
 CrawlerEntity::CrawlerEntity(Scene* scene, int state, bool dir) : Entity(scene) {

@@ -1,4 +1,5 @@
 #pragma once
+#include "Entity.h"
 
 class CrawlerEntity : public Entity {
 private:

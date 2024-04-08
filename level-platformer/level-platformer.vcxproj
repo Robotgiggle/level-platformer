@@ -171,6 +171,7 @@
     <Image Include="assets\flyer.png" />
     <Image Include="assets\healthbar.png" />
     <Image Include="assets\map_tiles.png" />
+    <Image Include="assets\pixel_font.png" />
     <Image Include="assets\player.png" />
     <Image Include="assets\walker.png" />
   </ItemGroup>

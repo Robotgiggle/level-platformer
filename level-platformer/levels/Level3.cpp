@@ -78,7 +78,7 @@ void Level3::initialise() {
 
     // setup sprite variants
     e_healthbar->m_animation_indices = new int[4] { 0, 1, 2, 3 };
-    e_healthbar->setup_anim(1, 4, 4);
+    e_healthbar->setup_anim(1, 4, 4, 0, 2);
 
     // ————— PLAYER ————— //
     // create entity

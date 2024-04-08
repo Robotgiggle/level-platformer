@@ -78,7 +78,7 @@ void Level2::initialise() {
 
     // setup sprite variants
     e_healthbar->m_animation_indices = new int[4] { 0, 1, 2, 3 };
-    e_healthbar->setup_anim(1, 4, 4);
+    e_healthbar->setup_anim(1, 4, 4, 0, 2);
 
     // ————— PLAYER ————— //
     // create entity
@@ -86,7 +86,7 @@ void Level2::initialise() {
 
     // setup basic attributes
     e_player->set_motion_type(Entity::SIDE_ON);
-    e_player->set_position(glm::vec3(20.0f, 7.0f, 0.0f));
+    e_player->set_position(glm::vec3(1.0f, 2.0f, 0.0f));
     e_player->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY, 0.0f));
     e_player->set_speed(1.8f);
     e_player->set_rot_speed(1.0f);

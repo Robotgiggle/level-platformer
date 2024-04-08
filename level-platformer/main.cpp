@@ -110,7 +110,7 @@ void initialise()
 
     for (Scene* scene : ALL_SCENES) scene->set_globalInfo(&g_globalInfo);
     g_globalInfo.lives = 3;
-    startup_scene(2);
+    startup_scene(0);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
