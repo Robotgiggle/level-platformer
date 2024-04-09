@@ -53,6 +53,9 @@ void EndScreen::initialise() {
     // ————— NEXT SCENE ————— //
     m_state.nextSceneID = -1;
 
+    // ————— FONT ————— //
+    m_font_id = Utility::load_texture(FONT_FILEPATH);
+
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
     m_state.map = new Map(END_WIDTH, END_HEIGHT, END_DATA, map_texture_id, 1.0f, 6, 4);
@@ -180,24 +183,21 @@ void EndScreen::process_input()
     }
 }
 
-void EndScreen::update(float delta_time) {
-    e_player->update(delta_time, NULL, 0, m_state.map);
-    e_walker1->update(delta_time, NULL, 0, m_state.map);
-    e_walker2->update(delta_time, NULL, 0, m_state.map);
-}
+//void EndScreen::update(float delta_time) {
+//    Scene::update(delta_time);
+//}
 
 void EndScreen::render(ShaderProgram* program) {
     e_background->render(program);
     m_state.map->render(program);
 
-    GLuint font_texture_id = Utility::load_texture(FONT_FILEPATH);
     if (m_globalInfo->lives > 0) {
         e_player->render(program);
-        Utility::draw_text(program, font_texture_id, "You Win!", 1.0f, 0.0f, glm::vec3(0.75f, 5.2f, 0.0f));
+        Utility::draw_text(program, m_font_id, "You Win!", 1.0f, 0.0f, glm::vec3(0.75f, 5.2f, 0.0f));
     } else {
         e_walker1->render(program);
         e_walker2->render(program);
-        Utility::draw_text(program, font_texture_id, "Game Over", 1.0f, 0.0f, glm::vec3(0.5f, 5.2f, 0.0f));
+        Utility::draw_text(program, m_font_id, "Game Over", 1.0f, 0.0f, glm::vec3(0.5f, 5.2f, 0.0f));
     }
-    Utility::draw_text(program, font_texture_id, "Press ENTER to quit", 0.5f, 0.0f, glm::vec3(0.0f, 3.3f, 0.0f));
+    Utility::draw_text(program, m_font_id, "Press ENTER to quit", 0.5f, 0.0f, glm::vec3(0.0f, 3.3f, 0.0f));
 }

@@ -1,3 +1,13 @@
+/**
+* Author: Ben Miller
+* Assignment: Platformer
+* Date due: 2024-04-13, 11:59pm
+* I pledge that I have completed this assignment without
+* collaborating with anyone else, in conformance with the
+* NYU School of Engineering Policies and Procedures on
+* Academic Misconduct.
+**/
+
 #define LOG(argument) std::cout << argument << '\n'
 #define GL_SILENCE_DEPRECATION
 #define GL_GLEXT_PROTOTYPES 1
@@ -108,8 +118,7 @@ void initialise()
 
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
 
-    for (Scene* scene : ALL_SCENES) scene->set_globalInfo(&g_globalInfo);
-    g_globalInfo.lives = 3;
+    for (Scene* scene : ALL_SCENES) scene->m_globalInfo = &g_globalInfo;
     startup_scene(0);
 
     glEnable(GL_BLEND);
@@ -166,17 +175,11 @@ void update()
 
     // ————— CAMERA TRACKING ————— //
     if (g_currentScene->get_player()) {
-        float xPos = g_currentScene->get_player()->get_position().x;
+        float playerX = g_currentScene->get_player()->get_position().x;
         float rBound = g_currentScene->m_state.map->get_right_bound();
-        if (xPos <= 4.5f) {
-            g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-4.5, -3.25f, 0.0f));
-        }
-        else if (xPos >= rBound - 5.0f) {
-            g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(5.0f - rBound, -3.25f, 0.0f));
-        }
-        else {
-            g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xPos, -3.25f, 0.0f));
-        }
+        float xPos = -1.0f * glm::min(glm::max(playerX, 4.5f), rBound - 5.0f);
+        
+        g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xPos, -3.25f, 0.0f));
     }
 }
 

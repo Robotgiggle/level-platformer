@@ -53,6 +53,9 @@ void Menu::initialise() {
     // ————— NEXT SCENE ————— //
     m_state.nextSceneID = 1;
 
+    // ————— FONT ————— //
+    m_font_id = Utility::load_texture(FONT_FILEPATH);
+
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
     m_state.map = new Map(MENU_WIDTH, MENU_HEIGHT, MENU_DATA, map_texture_id, 1.0f, 6, 4);
@@ -149,9 +152,7 @@ void Menu::update(float delta_time) {
     m_timer -= delta_time;
 
     // update entities
-    e_player->update(delta_time, NULL, 0, m_state.map);
-    e_crawler1->update(delta_time, NULL, 0, m_state.map);
-    e_crawler2->update(delta_time, NULL, 0, m_state.map);
+    Scene::update(delta_time);
 }
 
 void Menu::render(ShaderProgram* program) {
@@ -160,9 +161,8 @@ void Menu::render(ShaderProgram* program) {
     e_player->render(program);
     e_crawler1->render(program);
     e_crawler2->render(program);
-
-    GLuint font_texture_id = Utility::load_texture(FONT_FILEPATH);
-    Utility::draw_text(program, font_texture_id, "Bounder", 1.0f, 0.0f, glm::vec3(1.6f, 5.4f, 0.0f));
-    Utility::draw_text(program, font_texture_id, "Press", 0.45f, 0.0f, glm::vec3(3.65f, 3.5f, 0.0f));
-    Utility::draw_text(program, font_texture_id, "ENTER", 0.37f, 0.0f, glm::vec3(3.82f, 2.9f, 0.0f));
+    
+    Utility::draw_text(program, m_font_id, "Bounder", 1.0f, 0.0f, glm::vec3(1.6f, 5.4f, 0.0f));
+    Utility::draw_text(program, m_font_id, "Press", 0.45f, 0.0f, glm::vec3(3.65f, 3.5f, 0.0f));
+    Utility::draw_text(program, m_font_id, "ENTER", 0.37f, 0.0f, glm::vec3(3.82f, 2.9f, 0.0f));
 }

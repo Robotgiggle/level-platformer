@@ -22,11 +22,16 @@ struct GameState {
     Mix_Music* bgm;
     Mix_Chunk* jumpSfx;
     Mix_Chunk* coinSfx;
+    Mix_Chunk* stompSfx;
+    Mix_Chunk* deathSfx;
 
     int nextSceneID;
 };
 
 class Scene {
+protected:
+    // enforces abstractness without having any pure virtuals
+    Scene(int cap);
 public:
     // ————— ATTRIBUTES ————— //
     GameState m_state;
@@ -35,16 +40,14 @@ public:
     float m_timer = 0.0f;
 
     // ————— VIRTUAL METHODS ————— //
-    virtual void initialise() = 0;
-    virtual void process_input() = 0;
-    virtual void process_event(SDL_Event event) = 0;
-    virtual void update(float delta_time) = 0;
-    virtual void render(ShaderProgram* program) = 0;
+    virtual void initialise();
+    virtual void process_input() { return; }
+    virtual void process_event(SDL_Event event) { return; }
+    virtual void update(float delta_time);
+    virtual void render(ShaderProgram* program);
 
     // ————— CONCRETE METHODS ————— //
-    Scene(int cap);
     ~Scene();
-    // for Some Fucking Reason template functions have to be entirely defined in the header file
     template <class EntityType, class... SpawnArgs>
     EntityType* spawn(Scene* scene, SpawnArgs... args) {
         for (int i = 0; i < m_entityCap; i++) {
@@ -61,7 +64,4 @@ public:
     // ————— GETTERS ————— //
     GameState const get_state() const { return m_state; }
     virtual Entity* get_player() const = 0;
-
-    // ————— GETTERS ————— //
-    void const set_globalInfo(GlobalInfo* new_globals) { m_globalInfo = new_globals; };
 };

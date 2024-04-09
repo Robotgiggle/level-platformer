@@ -29,3 +29,20 @@ void Scene::initialise() {
         m_state.entities[i] = nullptr;
     }
 }
+
+void Scene::update(float delta_time) {
+    for (int i = 0; i < m_entityCap; i++) {
+        if (m_state.entities[i]) {
+            m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
+        }
+    }
+}
+
+void Scene::render(ShaderProgram* program) {
+    m_state.map->render(program);
+    for (int i = 0; i < m_entityCap; i++) {
+        if (m_state.entities[i]) {
+            m_state.entities[i]->render(program);
+        }
+    }
+}

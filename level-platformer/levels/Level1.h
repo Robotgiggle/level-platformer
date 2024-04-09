@@ -11,6 +11,9 @@ public:
     Entity*& e_pauseScreen = m_state.entities[4];
     Entity*& e_coin = m_state.entities[5];
 
+    // ————— FONT ————— //
+    GLuint m_font_id;
+
     // ————— METHODS ————— //
     Level1(int cap);
 

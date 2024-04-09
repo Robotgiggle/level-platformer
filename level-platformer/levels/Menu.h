@@ -9,6 +9,9 @@ public:
     Entity*& e_crawler1 = m_state.entities[2];
     Entity*& e_crawler2 = m_state.entities[3];
 
+    // ————— FONT ————— //
+    GLuint m_font_id;
+
     // ————— METHODS ————— //
     Menu(int cap);
 

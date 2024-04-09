@@ -22,6 +22,9 @@
 #include "Scene.h"
 #include "Entity.h"
 #include "Map.h"
+#include "entities/WalkerEntity.h"
+#include "entities/CrawlerEntity.h"
+#include "entities/FlyerEntity.h"
 #include "Utility.h"
 
 GLuint Utility::load_texture(const char* filepath)
@@ -118,7 +121,36 @@ void Utility::player_death(Entity* player, GlobalInfo* globalInfo) {
     if (player->get_position().y > 0.0f) {
         globalInfo->deathTimer = 2.5f;
         player->set_collision(false);
-        player->set_velocity(glm::vec3(0.0f, 6.5f, 0.0f));
-        player->set_acceleration(glm::vec3(0.0f, -9.5f, 0.0f));
+        player->set_velocity(glm::vec3(0.0f, 5.5f, 0.0f));
+        player->set_acceleration(glm::vec3(0.0f, -14.0f, 0.0f));
     }
+}
+
+int Utility::enemy_collision(Entity* player, Entity** entities, int numEntities) {
+    for (int i = 0; i < numEntities; i++) {
+        // make sure the selected entity exists and is actually an enemy
+        Entity* enemy = entities[i];
+        if (!enemy) continue;
+        const std::type_info& eType = typeid(*enemy);
+        if (eType != typeid(WalkerEntity) and
+            eType != typeid(CrawlerEntity) and
+            eType != typeid(FlyerEntity)) continue;
+        // process collision
+        if (player->check_collision(enemy)) {
+            if ((player->get_velocity().y < 0 or enemy->get_velocity().y > 0)
+                and player->get_position().y > 0.3f + enemy->get_position().y) {
+                if (eType == typeid(CrawlerEntity) and !enemy->get_angle()) {
+                    // stomping a crawler kills you if the spike is pointing up
+                    return 1;
+                }
+                enemy->set_active(false);
+                player->set_velocity(glm::vec3(0.0f, 4.0f, 0.0f));
+                return 2;
+            }
+            else {
+                return 1;
+            }
+        }
+    }
+    return 0;
 }

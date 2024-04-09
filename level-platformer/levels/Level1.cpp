@@ -40,19 +40,22 @@ const char SPRITESHEET_FILEPATH[] = "assets/player.png",
            CRAWLER_FILEPATH[] = "assets/crawler.png",
            FLYER_FILEPATH[] = "assets/flyer.png",
            COIN_FILEPATH[] = "assets/coin.png",
+           FONT_FILEPATH[] = "assets/pixel_font.png",
            PAUSE_FILEPATH[] = "assets/pause_screen.png",
            MAP_TILES_FILEPATH[] = "assets/map_tiles.png";
 
 // audio filepaths
 const char MUSIC_FILEPATH[] = "assets/default_music.mp3",
            JUMP_FILEPATH[] = "assets/default_jump.wav",
+           STOMP_FILEPATH[] = "assets/enemy_stomp.wav",
+           DEATH_FILEPATH[] = "assets/death_slow.wav",
            PICKUP_FILEPATH[] = "assets/coin_pickup.wav";
 
 // useful constants
 const float ACC_OF_GRAVITY = -6.0f;
 
 // constructor definition
-Level1::Level1(int cap) : Scene(cap) {}
+Level1::Level1(int cap) : Scene(cap) { m_timer = 4.0f; }
 
 // other methods
 void Level1::initialise() {
@@ -61,6 +64,9 @@ void Level1::initialise() {
 
     // ————— NEXT SCENE ————— //
     m_state.nextSceneID = 2;
+
+    // ————— FONT ————— //
+    m_font_id = Utility::load_texture(FONT_FILEPATH);
     
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
@@ -209,8 +215,9 @@ void Level1::initialise() {
     
     m_state.jumpSfx = Mix_LoadWAV(JUMP_FILEPATH);
     m_state.coinSfx = Mix_LoadWAV(PICKUP_FILEPATH);
-    Mix_VolumeChunk(m_state.jumpSfx, MIX_MAX_VOLUME / 2);
-    Mix_VolumeChunk(m_state.jumpSfx, MIX_MAX_VOLUME / 2);
+    m_state.stompSfx = Mix_LoadWAV(STOMP_FILEPATH);
+    m_state.deathSfx = Mix_LoadWAV(DEATH_FILEPATH);
+    Mix_Volume(-1, MIX_MAX_VOLUME / 2);
 }
 
 void Level1::process_event(SDL_Event event) {
@@ -274,33 +281,26 @@ void Level1::process_input()
 
 void Level1::update(float delta_time) {
     // update entities
-    for (int i = 0; i < 11; i++) m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
+    Scene::update(delta_time);
 
     // check for death fall
     if (e_player->get_position().y <= 0 && !m_globalInfo->playerDead) {
+        Mix_PlayChannel(-1, m_state.deathSfx, 0);
         Utility::player_death(e_player, m_globalInfo);
         m_state.nextSceneID = 1;
     }
 
     // check for enemy collision
-    for (int i = 6; i < 11; i++) {
-        Entity* enemy = m_state.entities[i];
-        if (e_player->check_collision(enemy) and !m_globalInfo->playerDead) {
-            if ((e_player->get_velocity().y < 0 or enemy->get_velocity().y > 0)
-                and e_player->get_position().y > 0.3f + enemy->get_position().y) {
-                if (typeid(*enemy) == typeid(CrawlerEntity) and !enemy->get_angle()) {
-                    // stomping a crawler kills you if the spike is pointing up
-                    Utility::player_death(e_player, m_globalInfo);
-                    m_state.nextSceneID = 1;
-                    continue;
-                }
-                enemy->set_active(false);
-                e_player->set_velocity(glm::vec3(0.0f, 4.0f, 0.0f));
-            }
-            else {
-                Utility::player_death(e_player, m_globalInfo);
-                m_state.nextSceneID = 1;
-            }
+    if (!m_globalInfo->playerDead) {
+        int status = Utility::enemy_collision(e_player, m_state.entities, m_entityCap);
+        if (status == 1) {
+            // player died
+            Mix_PlayChannel(-1, m_state.deathSfx, 0);
+            Utility::player_death(e_player, m_globalInfo);
+            m_state.nextSceneID = 1;
+        } else if (status == 2) {
+            // enemy stomped
+            Mix_PlayChannel(-1, m_state.stompSfx, 0);
         }
     }
 
@@ -309,7 +309,7 @@ void Level1::update(float delta_time) {
         Mix_PlayChannel(-1, m_state.coinSfx, 0);
         m_globalInfo->coins |= 1;
         e_coin->set_active(false);
-        m_timer = 2.5f;
+        m_timer = 6.5f;
     }
 
     // update HUD elements
@@ -328,8 +328,9 @@ void Level1::render(ShaderProgram* program) {
     e_background->render(program);
     m_state.map->render(program);
     for (int i = 5; i < 11; i++) m_state.entities[i]->render(program); 
+    if (m_timer > 0.0f) Utility::draw_text(program, m_font_id, "Pause with ESC", 0.45f, 0.0f, glm::vec3(1.6f, 5.1f, 0.0f));
     e_player->render(program);
     e_healthbar->render(program);
-    if (m_timer > 0.0f) e_coinbar->render(program);
+    if (m_timer > 4.0f) e_coinbar->render(program);
     if (m_globalInfo->gamePaused) e_pauseScreen->render(program);
 }

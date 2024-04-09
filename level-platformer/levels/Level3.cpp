@@ -46,6 +46,8 @@ const char SPRITESHEET_FILEPATH[] = "assets/player.png",
 // audio filepaths
 const char MUSIC_FILEPATH[] = "assets/default_music.mp3",
            JUMP_FILEPATH[] = "assets/default_jump.wav",
+           STOMP_FILEPATH[] = "assets/enemy_stomp.wav",
+           DEATH_FILEPATH[] = "assets/death_slow.wav",
            PICKUP_FILEPATH[] = "assets/coin_pickup.wav";
 
 // useful constants
@@ -201,7 +203,7 @@ void Level3::initialise() {
     // setup basic attributes
     newFlyer1->set_position(glm::vec3(7.0f, 5.0f, 0.0f));
     newFlyer2->set_position(glm::vec3(20.0f, 5.0f, 0.0f));
-    newFlyer3->set_position(glm::vec3(26.5f, 5.0f, 0.0f));
+    newFlyer3->set_position(glm::vec3(27.0f, 5.0f, 0.0f));
     for (Entity* flyer : { newFlyer1, newFlyer2, newFlyer3 }) {
         flyer->set_speed(4.8f);
         flyer->set_scale(glm::vec3(0.55f, 0.55f, 0.0f));
@@ -220,8 +222,9 @@ void Level3::initialise() {
 
     m_state.jumpSfx = Mix_LoadWAV(JUMP_FILEPATH);
     m_state.coinSfx = Mix_LoadWAV(PICKUP_FILEPATH);
-    Mix_VolumeChunk(m_state.jumpSfx, MIX_MAX_VOLUME / 2);
-    Mix_VolumeChunk(m_state.jumpSfx, MIX_MAX_VOLUME / 2);
+    m_state.stompSfx = Mix_LoadWAV(STOMP_FILEPATH);
+    m_state.deathSfx = Mix_LoadWAV(DEATH_FILEPATH);
+    Mix_Volume(-1, MIX_MAX_VOLUME / 2);
 }
 
 void Level3::process_event(SDL_Event event) {
@@ -285,33 +288,26 @@ void Level3::process_input()
 
 void Level3::update(float delta_time) {
     // update entities
-    for (int i = 0; i < 14; i++) m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
+    Scene::update(delta_time);
 
     // check for death fall
     if (e_player->get_position().y <= 0 && !m_globalInfo->playerDead) {
+        Mix_PlayChannel(-1, m_state.deathSfx, 0);
         Utility::player_death(e_player, m_globalInfo);
         m_state.nextSceneID = 3;
     }
 
     // check for enemy collision
-    for (int i = 6; i < 14; i++) {
-        Entity* enemy = m_state.entities[i];
-        if (e_player->check_collision(enemy) and !m_globalInfo->playerDead) {
-            if ((e_player->get_velocity().y < 0 or enemy->get_velocity().y > 0)
-                and e_player->get_position().y > 0.3f + enemy->get_position().y) {
-                if (typeid(*enemy) == typeid(CrawlerEntity) and !enemy->get_angle()) {
-                    // stomping a crawler kills you if the spike is pointing up
-                    Utility::player_death(e_player, m_globalInfo);
-                    m_state.nextSceneID = 3;
-                    continue;
-                }
-                enemy->set_active(false);
-                e_player->set_velocity(glm::vec3(0.0f, 4.0f, 0.0f));
-            }
-            else {
-                Utility::player_death(e_player, m_globalInfo);
-                m_state.nextSceneID = 3;
-            }
+    if (!m_globalInfo->playerDead) {
+        int status = Utility::enemy_collision(e_player, m_state.entities, m_entityCap);
+        if (status == 1) {
+            // player died
+            Mix_PlayChannel(-1, m_state.deathSfx, 0);
+            Utility::player_death(e_player, m_globalInfo);
+            m_state.nextSceneID = 3;
+        } else if (status == 2) {
+            // enemy stomped
+            Mix_PlayChannel(-1, m_state.stompSfx, 0);
         }
     }
 
