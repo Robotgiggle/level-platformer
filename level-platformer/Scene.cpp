@@ -22,3 +22,10 @@ Scene::~Scene() {
     Mix_FreeChunk(m_state.jumpSfx);
     Mix_FreeMusic(m_state.bgm);
 }
+
+void Scene::initialise() {
+    for (int i = 0; i < m_entityCap; i++) {
+        delete m_state.entities[i];
+        m_state.entities[i] = nullptr;
+    }
+}

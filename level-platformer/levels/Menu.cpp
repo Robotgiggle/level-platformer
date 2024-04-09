@@ -47,6 +47,9 @@ Menu::Menu(int cap) : Scene(cap) {}
 
 // other methods
 void Menu::initialise() {
+    // ————— PURGE ENTITIES ————— //
+    Scene::initialise();
+
     // ————— NEXT SCENE ————— //
     m_state.nextSceneID = 1;
 

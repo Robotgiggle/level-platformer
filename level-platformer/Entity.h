@@ -81,21 +81,23 @@ public:
     void rotate_anticlockwise() { m_rotation = 1.0f; };
 
     // ————— GETTERS ————— //
-    MotionType const get_motion_type()  const { return m_motion_type; };
-    glm::vec3  const get_position()     const { return m_position; };
-    glm::vec3  const get_velocity()     const { return m_velocity; };
-    glm::vec3  const get_acceleration() const { return m_acceleration; };
-    glm::vec3  const get_movement()     const { return m_movement; };
-    Scene*     const get_scene()        const { return m_scene; };
-    float      const get_rotation()     const { return m_rotation; };
-    float      const get_angle()        const { return m_angle; };
-    float      const get_rot_speed()    const { return m_rot_speed; };
-    float      const get_speed()        const { return m_speed; };
-    float      const get_width()        const { return m_scale.x; };
-    float      const get_height()       const { return m_scale.y; };
-    bool       const get_active()       const { return m_is_active; };
-    bool       const get_collision()    const { return m_has_collision; };
-    int        const get_array_index()  const { return m_array_index; };
+    MotionType const get_motion_type()   const { return m_motion_type; };
+    glm::vec3  const get_position()      const { return m_position; };
+    glm::vec3  const get_velocity()      const { return m_velocity; };
+    glm::vec3  const get_acceleration()  const { return m_acceleration; };
+    glm::vec3  const get_movement()      const { return m_movement; };
+    Scene*     const get_scene()         const { return m_scene; };
+    float      const get_rotation()      const { return m_rotation; };
+    float      const get_angle()         const { return m_angle; };
+    float      const get_rot_speed()     const { return m_rot_speed; };
+    float      const get_speed()         const { return m_speed; };
+    float      const get_width()         const { return m_scale.x; };
+    float      const get_height()        const { return m_scale.y; };
+    float      const get_sprite_width()  const { return m_sprite_scale.x; };
+    float      const get_sprite_height() const { return m_sprite_scale.y; };
+    bool       const get_active()        const { return m_is_active; };
+    bool       const get_collision()     const { return m_has_collision; };
+    int        const get_array_index()   const { return m_array_index; };
 
     // ————— SETTERS ————— //
     void const set_motion_type(MotionType new_type) { m_motion_type = new_type; };

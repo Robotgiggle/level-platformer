@@ -14,7 +14,7 @@ struct GlobalInfo {
 };
 
 struct GameState {
-    GameState(int cap) { entities = new Entity*[cap]; }
+    GameState(int cap) { entities = new Entity*[cap]{}; }
 
     Entity** entities;
     Map* map;
@@ -54,6 +54,7 @@ public:
             m_state.entities[i] = newEntity;
             return newEntity;
         }
+        std::cout << "Spawn failed, cap of " << m_entityCap << " entities is full!" << std::endl;
         return nullptr;
     }
 

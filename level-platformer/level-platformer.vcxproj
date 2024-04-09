@@ -79,7 +79,7 @@
       <AdditionalIncludeDirectories>C:\SDL\glew\include;C:\SDL\SDL2\include;C:\SDL\SDL2_image\include;C:\SDL\SDL2_mixer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\SDL\glew\lib\Release\Win32;C:\SDL\SDL2\lib\x86;C:\SDL\SDL2_image\lib\x86;C:\SDL\SDL2_mixer\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClCompile Include="entities\CrawlerEntity.cpp" />
     <ClCompile Include="entities\FlyerEntity.cpp" />
+    <ClCompile Include="entities\HudEntity.cpp" />
     <ClCompile Include="entities\WalkerEntity.cpp" />
     <ClCompile Include="levels\EndScreen.cpp" />
     <ClCompile Include="levels\Level1.cpp" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="entities\CrawlerEntity.h" />
     <ClInclude Include="entities\FlyerEntity.h" />
+    <ClInclude Include="entities\HudEntity.h" />
     <ClInclude Include="entities\WalkerEntity.h" />
     <ClInclude Include="levels\EndScreen.h" />
     <ClInclude Include="levels\Level1.h" />

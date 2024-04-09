@@ -3,21 +3,13 @@
 
 class Level3 : public Scene {
 public:
-    // ————— CUSTOM ENTITIES ————— //
-    Entity*& e_background = m_state.entities[0];
-    Entity*& e_player = m_state.entities[1];
-    Entity*& e_walker1 = m_state.entities[2];
-    Entity*& e_walker2 = m_state.entities[3];
-    Entity*& e_walker3 = m_state.entities[4];
-    Entity*& e_crawler1 = m_state.entities[5];
-    Entity*& e_crawler2 = m_state.entities[6];
-    Entity*& e_flyer1 = m_state.entities[7];
-    Entity*& e_flyer2 = m_state.entities[8];
-    Entity*& e_flyer3 = m_state.entities[9];
-    Entity*& e_coin = m_state.entities[10];
-    Entity*& e_healthbar = m_state.entities[11];
-    Entity*& e_coinbar = m_state.entities[12];
-    Entity*& e_pauseScreen = m_state.entities[13];
+    // ————— NAMED ENTITIES ————— //
+    Entity*& e_player = m_state.entities[0];
+    Entity*& e_background = m_state.entities[1];
+    Entity*& e_healthbar = m_state.entities[2];
+    Entity*& e_coinbar = m_state.entities[3];
+    Entity*& e_pauseScreen = m_state.entities[4];
+    Entity*& e_coin = m_state.entities[5];
 
     // ————— METHODS ————— //
     Level3(int cap);

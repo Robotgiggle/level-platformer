@@ -15,6 +15,7 @@
 #include "../entities/WalkerEntity.h"
 #include "../entities/CrawlerEntity.h"
 #include "../entities/FlyerEntity.h"
+#include "../entities/HudEntity.h"
 #include "Level1.h"
 
 // terrain map
@@ -55,21 +56,15 @@ Level1::Level1(int cap) : Scene(cap) {}
 
 // other methods
 void Level1::initialise() {
+    // ————— PURGE ENTITIES ————— //
+    Scene::initialise();
+
     // ————— NEXT SCENE ————— //
     m_state.nextSceneID = 2;
     
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
     m_state.map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 6, 4);
-
-    // ————— BACKGROUND ————— //
-    // create entity
-    e_background = new Entity(this);
-
-    // setup basic attributes
-    e_background->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
-    e_background->set_sprite_scale(glm::vec3(10.0f, 7.5f, 0.0f));
-    e_background->m_texture_id = Utility::load_texture(BACKGROUND_FILEPATH);
 
     // ————— PAUSE SCREEN ————— //
     // create entity
@@ -79,48 +74,6 @@ void Level1::initialise() {
     e_pauseScreen->set_position(glm::vec3(4.5f, 3.25f, 0.0f));
     e_pauseScreen->set_sprite_scale(glm::vec3(10.0f, 7.5f, 0.0f));
     e_pauseScreen->m_texture_id = Utility::load_texture(PAUSE_FILEPATH);
-
-    e_pauseScreen->update(0.0f, NULL, 0, m_state.map);
-
-    // ————— HEALTHBAR ————— //
-    // create entity
-    e_healthbar = new Entity(this);
-
-    // setup basic attributes
-    e_healthbar->set_position(glm::vec3(1.0f, 6.5f, 0.0f));
-    e_healthbar->set_sprite_scale(glm::vec3(2.5f, 0.6f, 0.0f));
-    e_healthbar->m_texture_id = Utility::load_texture(HEALTHBAR_FILEPATH);
-
-    // setup sprite variants
-    e_healthbar->m_animation_indices = new int[4] { 0, 1, 2, 3 };
-    e_healthbar->setup_anim(1, 4, 4, 0, 2);
-
-    // ————— COINBAR ————— //
-    // create entity
-    e_coinbar = new Entity(this);
-
-    // setup basic attributes
-    e_coinbar->set_position(glm::vec3(8.0f, 6.75f, 0.0f));
-    e_coinbar->set_sprite_scale(glm::vec3(2.1f, 0.6f, 0.0f));
-    e_coinbar->m_texture_id = Utility::load_texture(COINBAR_FILEPATH);
-
-    // setup sprite variants
-    e_coinbar->m_animation_indices = new int[8] { 0, 2, 4, 6, 1, 3, 5, 7 };
-    e_coinbar->setup_anim(2, 4, 4, 0, 2);
-
-    // ————— BONUS COIN ————— //
-    // create entity
-    e_coin = new Entity(this);
-
-    // setup basic attributes
-    e_coin->set_position(glm::vec3(17.0f, 5.0f, 0.0f));
-    e_coin->set_scale(glm::vec3(0.6f, 0.6f, 0.0f));
-    e_coin->set_sprite_scale(glm::vec3(0.6f, 0.6f, 0.0f));
-    e_coin->m_texture_id = Utility::load_texture(COIN_FILEPATH);
-
-    // setup spin animation
-    e_coin->m_animation_indices = new int[4] { 0, 1 };
-    e_coin->setup_anim(2, 1, 2, 4, 1);
 
     // ————— PLAYER ————— //
     // create entity
@@ -143,35 +96,81 @@ void Level1::initialise() {
     e_player->m_animation_indices = e_player->m_walking[Entity::RIGHT];
     e_player->setup_anim(2, 2, 2, 6);
 
-    // ————— WALKER ————— //
+    // ————— BACKGROUND ————— //
     // create entity
-    e_walker = new WalkerEntity(this,0);
+    e_background = new HudEntity(this, e_player, glm::vec3(0.0f));
 
     // setup basic attributes
-    e_walker->set_motion_type(Entity::SIDE_ON);
-    e_walker->set_position(glm::vec3(21.0f, 2.0f, 0.0f));
-    e_walker->set_movement(glm::vec3(0.0f));
-    e_walker->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY, 0.0f));
-    e_walker->set_speed(2.0f);
-    e_walker->set_scale(glm::vec3(0.72f, 0.9f, 0.0f));
-    e_walker->set_sprite_scale(glm::vec3(0.765f, 0.9f, 0.0f));
-    e_walker->m_texture_id = Utility::load_texture(WALKER_FILEPATH);
+    e_background->set_sprite_scale(glm::vec3(10.0f, 7.5f, 0.0f));
+    e_background->m_texture_id = Utility::load_texture(BACKGROUND_FILEPATH);
+
+    // ————— HEALTHBAR ————— //
+    // create entity
+    e_healthbar = new HudEntity(this, e_player, glm::vec3(-3.5f, 3.25f, 0.0f));
+
+    // setup basic attributes
+    e_healthbar->set_sprite_scale(glm::vec3(2.5f, 0.6f, 0.0f));
+    e_healthbar->m_texture_id = Utility::load_texture(HEALTHBAR_FILEPATH);
+
+    // setup sprite variants
+    e_healthbar->m_animation_indices = new int[4] { 0, 1, 2, 3 };
+    e_healthbar->setup_anim(1, 4, 4, 0, 2);
+
+    // ————— COINBAR ————— //
+    // create entity
+    e_coinbar = new HudEntity(this, e_player, glm::vec3(3.75f, 3.25f, 0.0f));
+
+    // setup basic attributes
+    e_coinbar->set_sprite_scale(glm::vec3(2.1f, 0.6f, 0.0f));
+    e_coinbar->m_texture_id = Utility::load_texture(COINBAR_FILEPATH);
+
+    // setup sprite variants
+    e_coinbar->m_animation_indices = new int[8] { 0, 2, 4, 6, 1, 3, 5, 7 };
+    e_coinbar->setup_anim(2, 4, 4, 0, 2);
+
+    // ————— BONUS COIN ————— //
+    // create entity
+    e_coin = new Entity(this);
+
+    // setup basic attributes
+    e_coin->set_position(glm::vec3(17.0f, 5.0f, 0.0f));
+    e_coin->set_scale(glm::vec3(0.6f, 0.6f, 0.0f));
+    e_coin->set_sprite_scale(glm::vec3(0.6f, 0.6f, 0.0f));
+    e_coin->m_texture_id = Utility::load_texture(COIN_FILEPATH);
+
+    // setup spin animation
+    e_coin->m_animation_indices = new int[4] { 0, 1 };
+    e_coin->setup_anim(2, 1, 2, 4, 1);
+
+    // ————— WALKER ————— //
+    // create entity
+    WalkerEntity* newWalker = spawn<WalkerEntity>(this,0);
+
+    // setup basic attributes
+    newWalker->set_motion_type(Entity::SIDE_ON);
+    newWalker->set_position(glm::vec3(21.0f, 2.0f, 0.0f));
+    newWalker->set_movement(glm::vec3(0.0f));
+    newWalker->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY, 0.0f));
+    newWalker->set_speed(2.0f);
+    newWalker->set_scale(glm::vec3(0.72f, 0.9f, 0.0f));
+    newWalker->set_sprite_scale(glm::vec3(0.765f, 0.9f, 0.0f));
+    newWalker->m_texture_id = Utility::load_texture(WALKER_FILEPATH);
 
     // setup walking animation
-    e_walker->m_walking[Entity::LEFT] = new int[4] { 0, 2 };
-    e_walker->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
-    e_walker->m_animation_indices = e_walker->m_walking[Entity::RIGHT];
-    e_walker->setup_anim(2, 2, 2, 6);
+    newWalker->m_walking[Entity::LEFT] = new int[4] { 0, 2 };
+    newWalker->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
+    newWalker->m_animation_indices = newWalker->m_walking[Entity::RIGHT];
+    newWalker->setup_anim(2, 2, 2, 6);
 
     // ————— CRAWLERS ————— //
     // create entities
-    e_crawler1 = new CrawlerEntity(this, 2, false);
-    e_crawler2 = new CrawlerEntity(this, 0, false);
+    CrawlerEntity* newCrawler1 = spawn<CrawlerEntity>(this, 2, false);
+    CrawlerEntity* newCrawler2 = spawn<CrawlerEntity>(this, 0, false);
 
     // setup basic attributes
-    e_crawler1->set_position(glm::vec3(5.0f, 1.1f, 0.0f));
-    e_crawler2->set_position(glm::vec3(12.0f, 3.9f, 0.0f));
-    for (Entity* crawler : { e_crawler1, e_crawler2 }) {
+    newCrawler1->set_position(glm::vec3(5.0f, 1.1f, 0.0f));
+    newCrawler2->set_position(glm::vec3(12.0f, 3.9f, 0.0f));
+    for (CrawlerEntity* crawler : { newCrawler1, newCrawler2 }) {
         crawler->set_speed(3.0f);
         crawler->set_scale(glm::vec3(0.6f, 0.75f, 0.0f));
         crawler->set_sprite_scale(glm::vec3(0.7f, 0.8f, 0.0f));
@@ -180,19 +179,19 @@ void Level1::initialise() {
         // setup walking animation
         crawler->m_walking[Entity::LEFT] = new int[4] { 0, 2 };
         crawler->m_walking[Entity::RIGHT] = new int[4] { 1, 3 };
-        crawler->m_animation_indices = crawler->m_walking[Entity::LEFT];
+        crawler->m_animation_indices = crawler->m_walking[crawler->get_clockwise()];
         crawler->setup_anim(2, 2, 2, 6);
     }
 
     // ————— FLYERS ————— //
     // create entities
-    e_flyer1 = new FlyerEntity(this, 0.5f, 0.75f, 4.0f);
-    e_flyer2 = new FlyerEntity(this, 0.5f, 0.75f, 4.0f);
+    FlyerEntity* newFlyer1 = spawn<FlyerEntity>(this, 0.5f, 0.75f, 4.0f);
+    FlyerEntity* newFlyer2 = spawn<FlyerEntity>(this, 0.5f, 0.75f, 4.0f);
 
     // setup basic attributes
-    e_flyer1->set_position(glm::vec3(22.0f, 5.0f, 0.0f));
-    e_flyer2->set_position(glm::vec3(27.0f, 5.0f, 0.0f));
-    for (Entity* flyer : { e_flyer1, e_flyer2 }) {
+    newFlyer1->set_position(glm::vec3(22.0f, 5.0f, 0.0f));
+    newFlyer2->set_position(glm::vec3(27.0f, 5.0f, 0.0f));
+    for (Entity* flyer : { newFlyer1, newFlyer2 }) {
         flyer->set_speed(4.8f);
         flyer->set_scale(glm::vec3(0.55f, 0.55f, 0.0f));
         flyer->set_sprite_scale(glm::vec3(0.84f, 0.63f, 0.0f));
@@ -201,7 +200,7 @@ void Level1::initialise() {
         // setup flapping animation
         flyer->m_walking[Entity::LEFT] = new int[4] { 0, 2, 4 };
         flyer->m_walking[Entity::RIGHT] = new int[4] { 1, 3, 5 };
-        flyer->m_animation_indices = e_flyer1->m_walking[Entity::LEFT];
+        flyer->m_animation_indices = flyer->m_walking[Entity::LEFT];
         flyer->setup_anim(2, 3, 3, 4, true);
     }
 
@@ -275,7 +274,7 @@ void Level1::process_input()
 
 void Level1::update(float delta_time) {
     // update entities
-    for (int i = 1; i < 8; i++) m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
+    for (int i = 0; i < 11; i++) m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
 
     // check for death fall
     if (e_player->get_position().y <= 0 && !m_globalInfo->playerDead) {
@@ -284,12 +283,12 @@ void Level1::update(float delta_time) {
     }
 
     // check for enemy collision
-    for (int i = 2; i < 7; i++) {
+    for (int i = 6; i < 11; i++) {
         Entity* enemy = m_state.entities[i];
         if (e_player->check_collision(enemy) and !m_globalInfo->playerDead) {
             if ((e_player->get_velocity().y < 0 or enemy->get_velocity().y > 0)
                 and e_player->get_position().y > 0.3f + enemy->get_position().y) {
-                if ((i == 3 or i == 4) and (!enemy->get_angle())) {
+                if (typeid(*enemy) == typeid(CrawlerEntity) and !enemy->get_angle()) {
                     // stomping a crawler kills you if the spike is pointing up
                     Utility::player_death(e_player, m_globalInfo);
                     m_state.nextSceneID = 1;
@@ -313,19 +312,9 @@ void Level1::update(float delta_time) {
         m_timer = 2.5f;
     }
 
-    // move background
-    Utility::move_background(e_player, e_background, m_state.map);
-    e_background->update(delta_time, NULL, 0, m_state.map);
-
-    // update and move healthbar
-    e_healthbar->set_position(e_background->get_position() + glm::vec3(-3.5f, 3.25f, 0.0f));
+    // update HUD elements
     e_healthbar->m_animation_index = m_globalInfo->lives;
-    e_healthbar->update(delta_time, NULL, 0, m_state.map);
-
-    // update and move coinbar
-    e_coinbar->set_position(e_background->get_position() + glm::vec3(3.75f, 3.25f, 0.0f));
     e_coinbar->m_animation_index = m_globalInfo->coins;
-    e_coinbar->update(delta_time, NULL, 0, m_state.map);
 
     // check for level transition
     glm::vec3 pos = e_player->get_position();
@@ -338,7 +327,9 @@ void Level1::update(float delta_time) {
 void Level1::render(ShaderProgram* program) {
     e_background->render(program);
     m_state.map->render(program);
-    for (int i = 1; i < 9; i++) m_state.entities[i]->render(program);
+    for (int i = 5; i < 11; i++) m_state.entities[i]->render(program); 
+    e_player->render(program);
+    e_healthbar->render(program);
     if (m_timer > 0.0f) e_coinbar->render(program);
     if (m_globalInfo->gamePaused) e_pauseScreen->render(program);
 }

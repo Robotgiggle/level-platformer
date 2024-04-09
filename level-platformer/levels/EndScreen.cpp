@@ -47,6 +47,9 @@ EndScreen::EndScreen(int cap) : Scene(cap) {}
 
 // other methods
 void EndScreen::initialise() {
+    // ————— PURGE ENTITIES ————— //
+    Scene::initialise();
+
     // ————— NEXT SCENE ————— //
     m_state.nextSceneID = -1;
 
