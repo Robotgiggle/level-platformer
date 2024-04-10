@@ -58,11 +58,10 @@ Level2::Level2(int cap) : Scene(cap) {}
 
 // other methods
 void Level2::initialise() {
-    // ————— PURGE ENTITIES ————— //
+    // ————— BASICS ————— //
     Scene::initialise();
-
-    // ————— NEXT SCENE ————— //
     m_state.nextSceneID = 3;
+    m_unordered_render_start = 5;
 
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
@@ -143,8 +142,10 @@ void Level2::initialise() {
     e_coin->m_texture_id = Utility::load_texture(COIN_FILEPATH);
 
     // setup spin animation
-    e_coin->m_animation_indices = new int[4] { 0, 1 };
-    e_coin->setup_anim(2, 1, 2, 4, 1);
+    e_coin->m_walking[0] = new int[4] { 0, 2 };
+    e_coin->m_walking[1] = new int[4] { 1, 3 };
+    e_coin->m_animation_indices = e_coin->m_walking[m_global_info->coins & 2];
+    e_coin->setup_anim(2, 2, 2, 4, 1);
 
     // ————— WALKERS ————— //
     // create entity
@@ -230,10 +231,10 @@ void Level2::process_event(SDL_Event event) {
         // process keydown triggers specifically
         switch (event.key.keysym.sym) {
         case SDLK_ESCAPE:
-            m_globalInfo->gamePaused = true;
+            m_global_info->gamePaused = true;
             break;
         case SDLK_RETURN:
-            m_globalInfo->gamePaused = false;
+            m_global_info->gamePaused = false;
             break;
         case SDLK_SPACE:
             if (e_player->m_collided_bottom) {
@@ -254,7 +255,7 @@ void Level2::process_input()
     e_player->set_rotation(0.0f);
 
     // no movement if you're dead
-    if (m_globalInfo->playerDead) return;
+    if (m_global_info->playerDead) return;
 
     // event triggers are *NOT* handled in this function, unlike before
     // see process_event() for event handling
@@ -287,19 +288,19 @@ void Level2::update(float delta_time) {
     Scene::update(delta_time);
 
     // check for death fall
-    if (e_player->get_position().y <= 0 && !m_globalInfo->playerDead) {
+    if (e_player->get_position().y <= 0 && !m_global_info->playerDead) {
         Mix_PlayChannel(-1, m_state.deathSfx, 0);
-        Utility::player_death(e_player, m_globalInfo);
+        Utility::player_death(e_player, m_global_info);
         m_state.nextSceneID = 2;
     }
 
     // check for enemy collision
-    if (!m_globalInfo->playerDead) {
-        int status = Utility::enemy_collision(e_player, m_state.entities, m_entityCap);
+    if (!m_global_info->playerDead) {
+        int status = Utility::enemy_collision(e_player, m_state.entities, m_entity_cap);
         if (status == 1) {
             // player died
             Mix_PlayChannel(-1, m_state.deathSfx, 0);
-            Utility::player_death(e_player, m_globalInfo);
+            Utility::player_death(e_player, m_global_info);
             m_state.nextSceneID = 2;
         } else if (status == 2) {
             // enemy stomped
@@ -308,20 +309,20 @@ void Level2::update(float delta_time) {
     }
 
     // check for coin collision
-    if (e_player->check_collision(e_coin) and !m_globalInfo->playerDead) {
+    if (e_player->check_collision(e_coin) and !m_global_info->playerDead) {
+        if (!(m_global_info->coins & 2)) m_timer = 2.5f;
         Mix_PlayChannel(-1, m_state.coinSfx, 0);
-        m_globalInfo->coins |= 2;
+        m_global_info->coins |= 2;
         e_coin->set_active(false);
-        m_timer = 2.5f;
     }
 
     // update HUD elements
-    e_healthbar->m_animation_index = m_globalInfo->lives;
-    e_coinbar->m_animation_index = m_globalInfo->coins;
+    e_healthbar->m_animation_index = m_global_info->lives;
+    e_coinbar->m_animation_index = m_global_info->coins;
 
     // check for level transition
     glm::vec3 pos = e_player->get_position();
-    if (pos.x > 29.0f and pos.y < 4.0f) m_globalInfo->changeScenes = true;
+    if (pos.x > 29.0f and pos.y < 4.0f) m_global_info->changeScenes = true;
 
     // tick timer
     if (m_timer > 0.0f) m_timer -= delta_time;
@@ -329,10 +330,9 @@ void Level2::update(float delta_time) {
 
 void Level2::render(ShaderProgram* program) {
     e_background->render(program);
-    m_state.map->render(program);
-    for (int i = 5; i < 12; i++) m_state.entities[i]->render(program);
+    Scene::render(program);
     e_player->render(program);
     e_healthbar->render(program);
     if (m_timer > 0.0f) e_coinbar->render(program);
-    if (m_globalInfo->gamePaused) e_pauseScreen->render(program);
+    if (m_global_info->gamePaused) e_pauseScreen->render(program);
 }

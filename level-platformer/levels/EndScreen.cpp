@@ -47,11 +47,10 @@ EndScreen::EndScreen(int cap) : Scene(cap) {}
 
 // other methods
 void EndScreen::initialise() {
-    // ————— PURGE ENTITIES ————— //
+    // ————— BASICS ————— //
     Scene::initialise();
-
-    // ————— NEXT SCENE ————— //
     m_state.nextSceneID = -1;
+    m_unordered_render_start = 1;
 
     // ————— FONT ————— //
     m_font_id = Utility::load_texture(FONT_FILEPATH);
@@ -76,8 +75,9 @@ void EndScreen::initialise() {
     e_player = new Entity(this);
 
     // setup basic attributes
+    e_player->set_active(m_global_info->lives > 0);
     e_player->set_motion_type(Entity::SIDE_ON);
-    e_player->set_position(glm::vec3(0.5f, 1.0f, 0.0f));
+    e_player->set_position(glm::vec3(0.0f, 1.0f, 0.0f));
     e_player->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY, 0.0f));
     e_player->set_speed(1.8f);
     e_player->set_rot_speed(1.0f);
@@ -101,6 +101,7 @@ void EndScreen::initialise() {
     e_walker1->set_position(glm::vec3(1.0f, 1.0f, 0.0f));
     e_walker2->set_position(glm::vec3(8.0f, 1.0f, 0.0f));
     for (Entity* walker : { e_walker1, e_walker2 }) {
+        walker->set_active(m_global_info->lives <= 0);
         walker->set_motion_type(Entity::SIDE_ON);
         walker->set_movement(glm::vec3(0.0f));
         walker->set_acceleration(glm::vec3(0.0f, ACC_OF_GRAVITY, 0.0f));
@@ -132,7 +133,7 @@ void EndScreen::process_event(SDL_Event event) {
         // process keydown triggers specifically
         switch (event.key.keysym.sym) {
         case SDLK_RETURN:
-            m_globalInfo->gameIsRunning = false;
+            m_global_info->gameIsRunning = false;
             break;
         case SDLK_SPACE:
             if (e_player->m_collided_bottom) {
@@ -153,7 +154,7 @@ void EndScreen::process_input()
     e_player->set_rotation(0.0f);
 
     // no movement if you're dead
-    if (m_globalInfo->playerDead) return;
+    if (m_global_info->playerDead) return;
 
     // event triggers are *NOT* handled in this function, unlike before
     // see process_event() for event handling
@@ -183,21 +184,10 @@ void EndScreen::process_input()
     }
 }
 
-//void EndScreen::update(float delta_time) {
-//    Scene::update(delta_time);
-//}
-
 void EndScreen::render(ShaderProgram* program) {
     e_background->render(program);
-    m_state.map->render(program);
-
-    if (m_globalInfo->lives > 0) {
-        e_player->render(program);
-        Utility::draw_text(program, m_font_id, "You Win!", 1.0f, 0.0f, glm::vec3(0.75f, 5.2f, 0.0f));
-    } else {
-        e_walker1->render(program);
-        e_walker2->render(program);
-        Utility::draw_text(program, m_font_id, "Game Over", 1.0f, 0.0f, glm::vec3(0.5f, 5.2f, 0.0f));
-    }
+    Scene::render(program);
+    if (m_global_info->lives > 0) Utility::draw_text(program, m_font_id, "You Win!", 1.0f, 0.0f, glm::vec3(0.75f, 5.2f, 0.0f));
+    else Utility::draw_text(program, m_font_id, "Game Over", 1.0f, 0.0f, glm::vec3(0.5f, 5.2f, 0.0f));
     Utility::draw_text(program, m_font_id, "Press ENTER to quit", 0.5f, 0.0f, glm::vec3(0.0f, 3.3f, 0.0f));
 }

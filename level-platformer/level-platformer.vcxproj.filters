@@ -57,6 +57,9 @@
     <ClCompile Include="entities\WalkerEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="entities\HudEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderProgram.h">
@@ -99,6 +102,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="entities\WalkerEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="entities\HudEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -146,6 +152,12 @@
     </Media>
     <Media Include="assets\default_music.mp3" />
     <Media Include="assets\coin_pickup.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="assets\death_slow.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="assets\enemy_stomp.wav">
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>

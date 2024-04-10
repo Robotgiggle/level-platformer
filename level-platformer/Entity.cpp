@@ -42,6 +42,7 @@ Entity::~Entity()
 }
 
 void Entity::despawn() {
+    assert(m_array_index >= 0);
     m_scene->m_state.entities[m_array_index] = nullptr;
     delete this;
 }
@@ -108,14 +109,14 @@ void Entity::update(float delta_time, Entity* solid_entities, int solid_entity_c
 {
     // ––––– INDEXING ––––– //
     if (m_array_index == -1) {
-        for (int i = 0; i < m_scene->m_entityCap; i++) {
+        m_array_index = -2;
+        for (int i = 0; i < m_scene->m_entity_cap; i++) {
             if (m_scene->m_state.entities[i] == this) {
                 m_array_index = i;
                 break;
             }
         }
     }
-    assert((m_array_index != -1));
 
     // ––––– BASICS ––––– //
     if (!m_is_active) return;

@@ -118,7 +118,7 @@ void initialise()
 
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
 
-    for (Scene* scene : ALL_SCENES) scene->m_globalInfo = &g_globalInfo;
+    for (Scene* scene : ALL_SCENES) scene->m_global_info = &g_globalInfo;
     startup_scene(0);
 
     glEnable(GL_BLEND);

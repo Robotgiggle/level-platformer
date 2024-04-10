@@ -13,10 +13,10 @@
 #include "Utility.h"
 #include "Scene.h"
 
-Scene::Scene(int cap) : m_state(cap), m_entityCap(cap) {}
+Scene::Scene(int cap) : m_state(cap), m_entity_cap(cap) {}
 
 Scene::~Scene() {
-    for (int i = 0; i < m_entityCap; i++) delete m_state.entities[i];
+    for (int i = 0; i < m_entity_cap; i++) delete m_state.entities[i];
     delete[] m_state.entities;
     delete m_state.map;
     Mix_FreeChunk(m_state.jumpSfx);
@@ -24,14 +24,14 @@ Scene::~Scene() {
 }
 
 void Scene::initialise() {
-    for (int i = 0; i < m_entityCap; i++) {
+    for (int i = 0; i < m_entity_cap; i++) {
         delete m_state.entities[i];
         m_state.entities[i] = nullptr;
     }
 }
 
 void Scene::update(float delta_time) {
-    for (int i = 0; i < m_entityCap; i++) {
+    for (int i = 0; i < m_entity_cap; i++) {
         if (m_state.entities[i]) {
             m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
         }
@@ -40,7 +40,7 @@ void Scene::update(float delta_time) {
 
 void Scene::render(ShaderProgram* program) {
     m_state.map->render(program);
-    for (int i = 0; i < m_entityCap; i++) {
+    for (int i = m_unordered_render_start; i < m_entity_cap; i++) {
         if (m_state.entities[i]) {
             m_state.entities[i]->render(program);
         }

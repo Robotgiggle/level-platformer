@@ -35,8 +35,9 @@ protected:
 public:
     // ————— ATTRIBUTES ————— //
     GameState m_state;
-    GlobalInfo* m_globalInfo;
-    const int m_entityCap;
+    GlobalInfo* m_global_info;
+    const int m_entity_cap;
+    int m_unordered_render_start = 0;
     float m_timer = 0.0f;
 
     // ————— VIRTUAL METHODS ————— //
@@ -50,14 +51,14 @@ public:
     ~Scene();
     template <class EntityType, class... SpawnArgs>
     EntityType* spawn(Scene* scene, SpawnArgs... args) {
-        for (int i = 0; i < m_entityCap; i++) {
+        for (int i = 0; i < m_entity_cap; i++) {
             if (m_state.entities[i]) continue;
             EntityType* newEntity = new EntityType(scene, args...);
             newEntity->set_array_index(i);
             m_state.entities[i] = newEntity;
             return newEntity;
         }
-        std::cout << "Spawn failed, cap of " << m_entityCap << " entities is full!" << std::endl;
+        std::cout << "Spawn failed, cap of " << m_entity_cap << " entities is full!" << std::endl;
         return nullptr;
     }
 

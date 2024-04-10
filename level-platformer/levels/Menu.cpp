@@ -47,11 +47,10 @@ Menu::Menu(int cap) : Scene(cap) {}
 
 // other methods
 void Menu::initialise() {
-    // ————— PURGE ENTITIES ————— //
+    // ————— BASICS ————— //
     Scene::initialise();
-
-    // ————— NEXT SCENE ————— //
     m_state.nextSceneID = 1;
+    m_unordered_render_start = 1;
 
     // ————— FONT ————— //
     m_font_id = Utility::load_texture(FONT_FILEPATH);
@@ -130,7 +129,7 @@ void Menu::process_event(SDL_Event event) {
         // process keydown triggers specifically
         switch (event.key.keysym.sym) {
         case SDLK_RETURN:
-            m_globalInfo->changeScenes = true;
+            m_global_info->changeScenes = true;
             break;
         default:
             break;
@@ -157,10 +156,7 @@ void Menu::update(float delta_time) {
 
 void Menu::render(ShaderProgram* program) {
     e_background->render(program);
-    m_state.map->render(program);
-    e_player->render(program);
-    e_crawler1->render(program);
-    e_crawler2->render(program);
+    Scene::render(program);
     
     Utility::draw_text(program, m_font_id, "Bounder", 1.0f, 0.0f, glm::vec3(1.6f, 5.4f, 0.0f));
     Utility::draw_text(program, m_font_id, "Press", 0.45f, 0.0f, glm::vec3(3.65f, 3.5f, 0.0f));

@@ -143,7 +143,7 @@ int Utility::enemy_collision(Entity* player, Entity** entities, int numEntities)
                     // stomping a crawler kills you if the spike is pointing up
                     return 1;
                 }
-                enemy->set_active(false);
+                enemy->despawn();
                 player->set_velocity(glm::vec3(0.0f, 4.0f, 0.0f));
                 return 2;
             }
